@@ -53,7 +53,7 @@ fig_bar_warp = px.bar(risk_return,
 fig_bar_sortino = px.bar(risk_return,
  x="Tickers",y='Sortino',
   hover_data=["Tickers"],
-   title="Risk and return looking at  Sortino and +Sortino Ratio")
+   title="Risk and return looking at  Sortino Ratio")
 
 
 #Creating the style of the Dashboard currently using a simple tab measure
@@ -100,17 +100,8 @@ app.layout = html.Div(id="output_container",
             figure=fig_bar_warp,
         ),
         dcc.Graph(
-            figure={
-                "data": [
-                    {
-                        "x": risk_return["Tickers"],
-                        "y": risk_return["+Sortino"],
-                        "type": "lines",
-                    },
-                ],
-                "layout": {"title": "Current Risk returns for NASDAQ using +Sortino Ratio"},
-            },
-        ),] ),
+            figure=fig_bar_sortino),
+            ] ),
             dcc.Tab(label="Forcasting Data", value='tab-2'),]), 
             html.Div('tabs_selection'),
          
