@@ -80,15 +80,6 @@ def ratios_menu():
 
 """The function for running the ratios selected."""
 def run_ratios():
-    global base_portfolio_df
-    global new_portfolios_df
-    base_portfolio_name = f'stock_{weight_base_portfolio_stock * 100:.0f}_bond_{weight_base_portfolio_bond * 100:.0f}'
-    risk_return_df, new_risk_return_df, base_portfolio_df, new_portfolios_df = diversify_stocks_with_base_portfolio(
-                                        base_portfolio_name, ticker_list, selected_ticker_list,
-                                        risk_free_rate, financing_rate, weight_diversifying_asset, weight_base_portfolio,
-                                        weight_base_portfolio_stock, weight_base_portfolio_bond,
-                                        ticker_base_portfolio_stock, ticker_base_portfolio_bond,
-                                        start_date, end_date, save_plots = False)
     # Cleans the Dataframe
     ratios_df = pd.DataFrame(load_ratios())
     ratios_df = ratios_df.set_index("ticker")
@@ -258,6 +249,17 @@ def age_menu():
 
     return age_action
 
+def calculate_ratios_and_returns_for_diversified_portfolio():
+    global base_portfolio_df
+    global new_portfolios_df
+    base_portfolio_name = f'stock_{weight_base_portfolio_stock * 100:.0f}_bond_{weight_base_portfolio_bond * 100:.0f}'
+    risk_return_df, new_risk_return_df, base_portfolio_df, new_portfolios_df = diversify_stocks_with_base_portfolio(
+                                        base_portfolio_name, ticker_list, selected_ticker_list,
+                                        risk_free_rate, financing_rate, weight_diversifying_asset, weight_base_portfolio,
+                                        weight_base_portfolio_stock, weight_base_portfolio_bond,
+                                        ticker_base_portfolio_stock, ticker_base_portfolio_bond,
+                                        start_date, end_date, save_plots = False)
+
 def allocation_menu():
     "Dialog to select allocation"
 
@@ -293,6 +295,7 @@ def allocation_menu():
     elif allocation_action == "Enter Manually":
         sys.exit("To Be Impemented")
     
+    calculate_ratios_and_returns_for_diversified_portfolio()
     run_final_function()
     return allocation_action
     
@@ -307,6 +310,7 @@ def run_age_function():
     if question == True:
         allocation_menu()
     else:
+        calculate_ratios_and_returns_for_diversified_portfolio()
         run_final_function()
 
 if __name__ == "__main__":
