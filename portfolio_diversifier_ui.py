@@ -11,7 +11,8 @@ from portfolio_diversifier_ratios_and_calculations import diversify_stocks_with_
 from portfolio_diversifier_forecasting import execute_monte_carlo_simulation
 
 ticker_list = ["qqq", "lqd", "hyg", "tlt", "ief", "shy", "gld", "slv", "efa", "eem", "iyr", "xle", "xlk", "xlf", 'GC=F']
-selected_ticker_list = ['shy', 'gld', 'tlt']
+#selected_ticker_list = ['shy', 'gld', 'tlt']
+selected_ticker_list = ['tlt']
 tickers = ticker_list
 risk_free_rate = 0.00
 financing_rate = 0.00
@@ -211,9 +212,12 @@ def run_final_function():
     elif first_action == "Visualize simulated expected returns":
         print(f"{new_portfolios_df}")
         for ticker in selected_ticker_list:
-            print(f"{new_portfolios_df[ticker]}")
+            daily_returns_df = pd.concat([new_portfolios_df[ticker], base_portfolio_df], axis=1)
+            daily_returns_df.columns = [ticker, 'base']
+            daily_returns_df.columns = pd.MultiIndex.from_product([daily_returns_df.columns, ['close']])
+            #daily_returns_df.reset_index(drop=True)
             print(f"{base_portfolio_df}")
-            daily_returns_df = pd.concat([new_portfolios_df[ticker], base_portfolio_df])
+            print(f"{new_portfolios_df[ticker]}")
             print(f"{daily_returns_df}")
             execute_monte_carlo_simulation(daily_returns_df, weight_diversifying_asset, weight_base_portfolio, number_of_years = 5)
         sys.exit("Monte Carlo simulation query code to be completed. Thank you for choosing our services")
