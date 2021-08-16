@@ -53,7 +53,7 @@ fig_bar_warp = px.bar(risk_return,
 fig_bar_sortino = px.bar(risk_return,
  x="Tickers",y='Sortino',
   hover_data=["Tickers"],
-   title="Risk and return looking at  Sortino Ratio")
+   title="Risk and return looking at Sortino Ratio")
 
 
 #Creating the style of the Dashboard currently using a simple tab measure
