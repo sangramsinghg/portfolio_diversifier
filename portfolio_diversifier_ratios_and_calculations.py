@@ -1,5 +1,5 @@
 '''
-Ratios and financial calculation
+Ratios and financial calculations
 Author: Sangram Singh
 '''
 
@@ -423,7 +423,7 @@ def retrieve_ticker_data_and_update_data_frames(ticker, yahoo,
 
 def diversify_stocks_with_base_portfolio(
                                     base_portfolio_name, ticker_list, risk_free_rate, 
-                                    finacing_rate, weight_asset, weight_base_portfolio,
+                                    financing_rate, weight_asset, weight_base_portfolio,
                                     weight_base_portfolio_stock, weight_base_portfolio_bond,
                                     ticker_base_portfolio_stock, ticker_base_portfolio_bond,
                                     start_date, end_date, new_portfolios):
@@ -471,8 +471,7 @@ def calculate_cumulative_product(ticker_list, new_ports, replacement_portfolio, 
     cumulative_returns_df.to_csv(f"cumulative_returns_{replacement_portfolio_name}.csv")
     return cumulative_returns_df
 
-
-def plot_portfolio_data(base_portfolio_name, ticker_list, selected_ticker_list, risk_return_df, new_risk_return_df, base_portfolio_df, new_portfolios):
+def save_portfolio_data_plots(base_portfolio_name, ticker_list, selected_ticker_list, risk_return_df, new_risk_return_df, base_portfolio_df, new_portfolios):
     sorted_values = risk_return_df.sort_values('Sharpe', ascending=False).head()
     print(f"Sorted by Sharpe:\n{sorted_values}")
     sorted_values = new_risk_return_df.sort_values('Vol', ascending=True).head()
@@ -493,8 +492,8 @@ def plot_portfolio_data(base_portfolio_name, ticker_list, selected_ticker_list, 
         ylabel = "Cumulative Return",
         height = 500,
         width = 1000)
-    hvplot.show(plot)
-    # hvplot.save(plot, 'cumulative_returns_{base_portfolio_name}.png')
+    hvplot.save(plot, "cumulative_returns.png")
+
     cumulative_returns_selected_df = cumulative_returns_df[selected_ticker_list + [base_portfolio_name]]
     cumulative_returns_selected_df.to_csv(f"cumulative_returns_selected.csv")
     cumulative_returns_selected_df.to_csv(f"cumulative_returns_selected_{base_portfolio_name}.csv")
@@ -504,8 +503,8 @@ def plot_portfolio_data(base_portfolio_name, ticker_list, selected_ticker_list, 
         ylabel = "Cumulative Return",
         height = 500,
         width = 1000)
-    hvplot.show(plot)
-    # hvplot.save(plot, 'cumulative_returns_selected_{base_portfolio_name}.png')
+    hvplot.save(plot, "cumulative_returns_selected.png")
+
     cumulative_returns_selected_2008_2009_df = cumulative_returns_selected_df.loc['01-01-2008':'12-31-2009']
     cumulative_returns_selected_2008_2009_df.to_csv(f"cumulative_returns_selected_2008_2009.csv")
     cumulative_returns_selected_2008_2009_df.to_csv(f"cumulative_returns_selected_2008_2009_{base_portfolio_name}.csv")
@@ -515,8 +514,8 @@ def plot_portfolio_data(base_portfolio_name, ticker_list, selected_ticker_list, 
         ylabel = "Cumulative Return",
         height = 450,
         width = 900)
-    hvplot.show(plot)
-    # hvplot.save(plot, "cumulative_returns_selected_2008_2009_{base_portfolio_name}.png")
+    hvplot.save(plot, "cumulative_returns_selected_2008_2009.png")
+
     cumulative_returns_2020 = {}
     for ticker in ticker_list:
         cumulative_returns_2020[ticker] = (1 + new_portfolios[ticker].loc['01-01-2020':'12-31-2020']).cumprod()
@@ -531,44 +530,44 @@ def plot_portfolio_data(base_portfolio_name, ticker_list, selected_ticker_list, 
         ylabel = "Cumulative Return",
         height = 450,
         width = 900)
-    hvplot.show(plot)
-    # hvplot_save(plot, "cumulative_returns_selected_2020_{base_portfolio_name}.png")
+    hvplot.save(plot, "cumulative_returns_seleted_2008_2010.csv")
 
-ticker_list = ["qqq", "lqd", "hyg", "tlt", "ief", "shy", "gld", "slv", "efa", "eem", "iyr", "xle", "xlk", "xlf", 'GC=F']
-selected_ticker_list = ['tlt', 'shy', 'GC=F', 'gld']
-risk_free_rate = 0.00
-financing_rate = 0.00
-weight_asset = 0.20
-weight_base_portfolio = 0.80
+def run_calculations():
+    ticker_list = ["qqq", "lqd", "hyg", "tlt", "ief", "shy", "gld", "slv", "efa", "eem", "iyr", "xle", "xlk", "xlf", 'GC=F']
+    selected_ticker_list = ['tlt', 'shy', 'GC=F', 'gld']
+    risk_free_rate = 0.00
+    financing_rate = 0.00
+    weight_asset = 0.20
+    weight_base_portfolio = 0.80
 
-weight_base_portfolio_stock = 1.0
-weight_base_portfolio_bond  = 0.0
-ticker_base_portfolio_stock = 'spy'
-ticker_base_portfolio_bond  = 'ief'
-start_date = '2008-01-01'
-end_date = '2020-12-31'
-new_portfolios = {}
-base_portfolio_name = f'stock_{weight_base_portfolio_stock * 100:.0f}_bond_{weight_base_portfolio_bond:.0f}'
+    weight_base_portfolio_stock = 1.0
+    weight_base_portfolio_bond  = 0.0
+    ticker_base_portfolio_stock = 'spy'
+    ticker_base_portfolio_bond  = 'ief'
+    start_date = '2008-01-01'
+    end_date = '2020-12-31'
+    new_portfolios = {}
+    base_portfolio_name = f'stock_{weight_base_portfolio_stock * 100:.0f}_bond_{weight_base_portfolio_bond * 100:.0f}'
 
-risk_return_df, new_risk_return_df, base_portfolio_df = diversify_stocks_with_base_portfolio(
+    risk_return_df, new_risk_return_df, base_portfolio_df = diversify_stocks_with_base_portfolio(
                                         base_portfolio_name, ticker_list, risk_free_rate, financing_rate, weight_asset, 
                                         weight_base_portfolio,
                                         weight_base_portfolio_stock, weight_base_portfolio_bond,
                                         ticker_base_portfolio_stock, ticker_base_portfolio_bond,
                                         start_date, end_date,
                                         new_portfolios)
-plot_portfolio_data(base_portfolio_name, ticker_list, selected_ticker_list, risk_return_df, new_risk_return_df, base_portfolio_df, new_portfolios)
+    save_portfolio_data_plots(base_portfolio_name, ticker_list, selected_ticker_list, risk_return_df, new_risk_return_df, base_portfolio_df, new_portfolios)
 
-weight_base_portfolio_stock = 0.60
-weight_base_portfolio_bond  = 0.40
-new_portfolios = {}
-base_portfolio_name = f'stock_{weight_base_portfolio_stock * 100:.0f}_bond_{weight_base_portfolio_bond:.0f}'
+    weight_base_portfolio_stock = 0.60
+    weight_base_portfolio_bond  = 0.40
+    new_portfolios = {}
+    base_portfolio_name = f'stock_{weight_base_portfolio_stock * 100:.0f}_bond_{weight_base_portfolio_bond * 100:.0f}'
  
-risk_return_df, new_risk_return_df, base_portfolio_df = diversify_stocks_with_base_portfolio(
+    risk_return_df, new_risk_return_df, base_portfolio_df = diversify_stocks_with_base_portfolio(
                                         base_portfolio_name, ticker_list, risk_free_rate, financing_rate, weight_asset, 
                                         weight_base_portfolio,
                                         weight_base_portfolio_stock, weight_base_portfolio_bond,
                                         ticker_base_portfolio_stock, ticker_base_portfolio_bond,
                                         start_date, end_date,
                                         new_portfolios)
-plot_portfolio_data(base_portfolio_name, ticker_list, selected_ticker_list, risk_return_df, new_risk_return_df, base_portfolio_df, new_portfolios)
+    save_portfolio_data_plots(base_portfolio_name, ticker_list, selected_ticker_list, risk_return_df, new_risk_return_df, base_portfolio_df, new_portfolios)
