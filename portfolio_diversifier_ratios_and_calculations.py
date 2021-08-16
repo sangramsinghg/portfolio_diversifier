@@ -422,12 +422,13 @@ def retrieve_ticker_data_and_update_data_frames(ticker, yahoo,
                            weight_base_portfolio, data_periodicity, risk_return_df, new_risk_return_df, new_portfolios)
 
 def diversify_stocks_with_base_portfolio(
-                                    base_portfolio_name, ticker_list, risk_free_rate, 
+                                    base_portfolio_name, ticker_list, selected_ticker_list, risk_free_rate, 
                                     financing_rate, weight_asset, weight_base_portfolio,
                                     weight_base_portfolio_stock, weight_base_portfolio_bond,
                                     ticker_base_portfolio_stock, ticker_base_portfolio_bond,
-                                    start_date, end_date, new_portfolios):
+                                    start_date, end_date, save_plots):
     
+    new_portfolios = {}
     stock_df = retrieve_yahoo_data(ticker_base_portfolio_stock, start_date, end_date)
     bond_df = retrieve_yahoo_data(ticker_base_portfolio_bond, start_date, end_date)
     base_portfolio_df = ((weight_base_portfolio_stock * stock_df) + 
@@ -443,11 +444,12 @@ def diversify_stocks_with_base_portfolio(
     csv_file = ""
 
     for ticker in ticker_list:
-        retrieve_ticker_data_and_update_data_frames(ticker, True, csv_file, risk_return_df, ticker_data_dict, new_risk_return_df, new_portfolios,
-                                               base_portfolio_df,
-                                               risk_free_rate, financing_rate, weight_asset, weight_base_portfolio,
-                                               start_date, end_date,
-                                               252)
+        retrieve_ticker_data_and_update_data_frames(
+                                            ticker, True, csv_file, risk_return_df, ticker_data_dict, new_risk_return_df,
+                                            new_portfolios, base_portfolio_df,
+                                            risk_free_rate, financing_rate, weight_asset, weight_base_portfolio,
+                                            start_date, end_date,
+                                            252)
     risk_return_df.to_csv(f"risk_return_{base_portfolio_name}.csv")
     risk_return_df.to_csv(f'risk_return.csv')
     new_risk_return_df.to_csv(f"new_risk_return_{base_portfolio_name}.csv")
@@ -459,7 +461,17 @@ def diversify_stocks_with_base_portfolio(
     ticker_data_df.to_csv(f"ticker_data_{base_portfolio_name}.csv")
     ticker_data_df.to_csv(f"ticker_data.csv")
 
-    return risk_return_df, new_risk_return_df, base_portfolio_df
+    save_portfolio_cumulative_data_plots(
+                                    base_portfolio_name,
+                                    ticker_list,
+                                    selected_ticker_list,
+                                    risk_return_df,
+                                    new_risk_return_df,
+                                    base_portfolio_df,
+                                    new_portfolios,
+                                    save_plots)
+
+    return risk_return_df, new_risk_return_df, base_portfolio_df, new_portfolios_df
 
 def calculate_cumulative_product(ticker_list, new_ports, replacement_portfolio, replacement_portfolio_name):
     cumulative_returns = {}
@@ -471,7 +483,9 @@ def calculate_cumulative_product(ticker_list, new_ports, replacement_portfolio, 
     cumulative_returns_df.to_csv(f"cumulative_returns_{replacement_portfolio_name}.csv")
     return cumulative_returns_df
 
-def save_portfolio_data_plots(base_portfolio_name, ticker_list, selected_ticker_list, risk_return_df, new_risk_return_df, base_portfolio_df, new_portfolios):
+def save_portfolio_cumulative_data_plots(
+                            base_portfolio_name, ticker_list, selected_ticker_list, risk_return_df,
+                            new_risk_return_df, base_portfolio_df, new_portfolios, save_plot):
     sorted_values = risk_return_df.sort_values('Sharpe', ascending=False).head()
     print(f"Sorted by Sharpe:\n{sorted_values}")
     sorted_values = new_risk_return_df.sort_values('Vol', ascending=True).head()
@@ -486,35 +500,41 @@ def save_portfolio_data_plots(base_portfolio_name, ticker_list, selected_ticker_
     cumulative_returns_df = pd.DataFrame(cumulative_returns)
     cumulative_returns_df.to_csv(f"cumulative_returns.csv")
     cumulative_returns_df.to_csv(f"cumulative_returns_{base_portfolio_name}.csv")
-    plot = cumulative_returns_df.hvplot.line(
-        title="Cumulative Returns - Growth of initial investment of $1",
-        xlabel = "Year",
-        ylabel = "Cumulative Return",
-        height = 500,
-        width = 1000)
-    hvplot.save(plot, "cumulative_returns.png")
+    
+    if save_plot == True:
+        plot = cumulative_returns_df.hvplot.line(
+            title="Cumulative Returns - Growth of initial investment of $1",
+            xlabel = "Year",
+            ylabel = "Cumulative Return",
+            height = 500,
+            width = 1000)
+        hvplot.save(plot, "cumulative_returns.png")
 
     cumulative_returns_selected_df = cumulative_returns_df[selected_ticker_list + [base_portfolio_name]]
     cumulative_returns_selected_df.to_csv(f"cumulative_returns_selected.csv")
     cumulative_returns_selected_df.to_csv(f"cumulative_returns_selected_{base_portfolio_name}.csv")
-    plot = cumulative_returns_selected_df.hvplot.line(
-        title="Cumulative Returns Selected - Growth of initial investment of $1",
-        xlabel = "Year",
-        ylabel = "Cumulative Return",
-        height = 500,
-        width = 1000)
-    hvplot.save(plot, "cumulative_returns_selected.png")
+
+    if save_plot == True:
+        plot = cumulative_returns_selected_df.hvplot.line(
+            title="Cumulative Returns Selected - Growth of initial investment of $1",
+            xlabel = "Year",
+            ylabel = "Cumulative Return",
+            height = 500,
+            width = 1000)
+        hvplot.save(plot, "cumulative_returns_selected.png")
 
     cumulative_returns_selected_2008_2009_df = cumulative_returns_selected_df.loc['01-01-2008':'12-31-2009']
     cumulative_returns_selected_2008_2009_df.to_csv(f"cumulative_returns_selected_2008_2009.csv")
     cumulative_returns_selected_2008_2009_df.to_csv(f"cumulative_returns_selected_2008_2009_{base_portfolio_name}.csv")
-    plot = cumulative_returns_selected_2008_2009_df.hvplot.line(
-        title="Cumulative Returns Selected - 2008 to 2009 - Growth of initial investment of $1",
-        xlabel = "Year",
-        ylabel = "Cumulative Return",
-        height = 450,
-        width = 900)
-    hvplot.save(plot, "cumulative_returns_selected_2008_2009.png")
+    
+    if save_plot == True:
+        plot = cumulative_returns_selected_2008_2009_df.hvplot.line(
+            title="Cumulative Returns Selected - 2008 to 2009 - Growth of initial investment of $1",
+            xlabel = "Year",
+            ylabel = "Cumulative Return",
+            height = 450,
+            width = 900)
+        hvplot.save(plot, "cumulative_returns_selected_2008_2009.png")
 
     cumulative_returns_2020 = {}
     for ticker in ticker_list:
@@ -524,13 +544,15 @@ def save_portfolio_data_plots(base_portfolio_name, ticker_list, selected_ticker_
     cumulative_returns_selected_2020_df = cumulative_returns_2020_df[selected_ticker_list + [base_portfolio_name]]
     cumulative_returns_selected_2020_df.to_csv(f"cumulative_returns_selected_2008_2010.csv")
     cumulative_returns_selected_2020_df.to_csv(f"cumulative_returns_selected_2008_2010_{base_portfolio_name}.csv")
-    plot = cumulative_returns_selected_2020_df.hvplot.line(
-        title="Cumulative Returns Selected - 2020 - Growth of initial investment of $1",
-        xlabel = "Year",
-        ylabel = "Cumulative Return",
-        height = 450,
-        width = 900)
-    hvplot.save(plot, "cumulative_returns_seleted_2008_2010.csv")
+    
+    if save_plot == True:
+        plot = cumulative_returns_selected_2020_df.hvplot.line(
+            title="Cumulative Returns Selected - 2020 - Growth of initial investment of $1",
+            xlabel = "Year",
+            ylabel = "Cumulative Return",
+            height = 450,
+            width = 900)
+        hvplot.save(plot, "cumulative_returns_seleted_2008_2010.csv")
 
 def run_calculations():
     ticker_list = ["qqq", "lqd", "hyg", "tlt", "ief", "shy", "gld", "slv", "efa", "eem", "iyr", "xle", "xlk", "xlf", 'GC=F']
@@ -549,25 +571,21 @@ def run_calculations():
     new_portfolios = {}
     base_portfolio_name = f'stock_{weight_base_portfolio_stock * 100:.0f}_bond_{weight_base_portfolio_bond * 100:.0f}'
 
-    risk_return_df, new_risk_return_df, base_portfolio_df = diversify_stocks_with_base_portfolio(
-                                        base_portfolio_name, ticker_list, risk_free_rate, financing_rate, weight_asset, 
+    risk_return_df, new_risk_return_df, base_portfolio_df, new_portfolios = diversify_stocks_with_base_portfolio(
+                                        base_portfolio_name, ticker_list, selected_ticker_list, risk_free_rate, financing_rate, weight_asset, 
                                         weight_base_portfolio,
                                         weight_base_portfolio_stock, weight_base_portfolio_bond,
                                         ticker_base_portfolio_stock, ticker_base_portfolio_bond,
-                                        start_date, end_date,
-                                        new_portfolios)
-    save_portfolio_data_plots(base_portfolio_name, ticker_list, selected_ticker_list, risk_return_df, new_risk_return_df, base_portfolio_df, new_portfolios)
+                                        start_date, end_date, save_plots = True)
 
     weight_base_portfolio_stock = 0.60
     weight_base_portfolio_bond  = 0.40
     new_portfolios = {}
     base_portfolio_name = f'stock_{weight_base_portfolio_stock * 100:.0f}_bond_{weight_base_portfolio_bond * 100:.0f}'
  
-    risk_return_df, new_risk_return_df, base_portfolio_df = diversify_stocks_with_base_portfolio(
-                                        base_portfolio_name, ticker_list, risk_free_rate, financing_rate, weight_asset, 
+    risk_return_df, new_risk_return_df, base_portfolio_df, new_portfolios = diversify_stocks_with_base_portfolio(
+                                        base_portfolio_name, ticker_list, selected_ticker_list, risk_free_rate, financing_rate, weight_asset, 
                                         weight_base_portfolio,
                                         weight_base_portfolio_stock, weight_base_portfolio_bond,
                                         ticker_base_portfolio_stock, ticker_base_portfolio_bond,
-                                        start_date, end_date,
-                                        new_portfolios)
-    save_portfolio_data_plots(base_portfolio_name, ticker_list, selected_ticker_list, risk_return_df, new_risk_return_df, base_portfolio_df, new_portfolios)
+                                        start_date, end_date, save_plots = True)

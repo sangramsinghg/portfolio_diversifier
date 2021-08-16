@@ -8,13 +8,14 @@ import questionary
 from pathlib import Path
 import pandas as pd
 from portfolio_diversifier_ratios_and_calculations import diversify_stocks_with_base_portfolio
+from portfolio_diversifier_forecasting import execute_monte_carlo_simulation
 
-# provisional ticker to test code
-tickers = ["shy","gld","tlt","xle"]
 ticker_list = ["qqq", "lqd", "hyg", "tlt", "ief", "shy", "gld", "slv", "efa", "eem", "iyr", "xle", "xlk", "xlf", 'GC=F']
+selected_ticker_list = ['shy', 'gld', 'tlt']
+tickers = ticker_list
 risk_free_rate = 0.00
 financing_rate = 0.00
-weight_asset = 0.20
+weight_diversifying_asset = 0.20
 weight_base_portfolio = 0.80
 
 weight_base_portfolio_stock = 0.60
@@ -23,6 +24,9 @@ ticker_base_portfolio_stock = 'spy'
 ticker_base_portfolio_bond  = 'ief'
 start_date = '2008-01-01'
 end_date = '2020-12-31'
+
+base_portfolio_df = pd.DataFrame()
+new_portfolios_df = pd.DataFrame()
 
 """ Function to decide main options"""
 def initial_action():
@@ -76,15 +80,15 @@ def ratios_menu():
 
 """The function for running the ratios selected."""
 def run_ratios():
-    new_portfolios = {}
+    global base_portfolio_df
+    global new_portfolios_df
     base_portfolio_name = f'stock_{weight_base_portfolio_stock * 100:.0f}_bond_{weight_base_portfolio_bond * 100:.0f}'
-    diversify_stocks_with_base_portfolio(
-                                        base_portfolio_name, ticker_list, risk_free_rate, financing_rate, weight_asset, 
-                                        weight_base_portfolio,
+    risk_return_df, new_risk_return_df, base_portfolio_df, new_portfolios_df = diversify_stocks_with_base_portfolio(
+                                        base_portfolio_name, ticker_list, selected_ticker_list,
+                                        risk_free_rate, financing_rate, weight_diversifying_asset, weight_base_portfolio,
                                         weight_base_portfolio_stock, weight_base_portfolio_bond,
                                         ticker_base_portfolio_stock, ticker_base_portfolio_bond,
-                                        start_date, end_date,
-                                        new_portfolios)
+                                        start_date, end_date, save_plots = False)
     # Cleans the Dataframe
     ratios_df = pd.DataFrame(load_ratios())
     ratios_df = ratios_df.set_index("ticker")
@@ -155,6 +159,7 @@ def add_ticker():
         choices = (all_tickers)
     ).ask()
 
+    print(f"Add ticker action is {add_ticker_action}\n")
     return add_ticker_action
 
 def run_add_tickers():
@@ -178,6 +183,7 @@ def remove_ticker():
         choices = (tickers)
     ).ask()
 
+    print(f"Remove ticker action is {remove_ticker_action}\n")
     return remove_ticker_action
 
 def run_remove_tickers():
@@ -212,7 +218,14 @@ def run_final_function():
     if first_action == "Check financial ratios":
         run_ratios_function()
     elif first_action == "Visualize simulated expected returns":
-        sys.exit("Montecarlo simulation query code to be completed. Thank you for choosing our services")
+        print(f"{new_portfolios_df}")
+        for ticker in selected_ticker_list:
+            print(f"{new_portfolios_df[ticker]}")
+            print(f"{base_portfolio_df}")
+            daily_returns_df = pd.concat([new_portfolios_df[ticker], base_portfolio_df])
+            print(f"{daily_returns_df}")
+            execute_monte_carlo_simulation(daily_returns_df, weight_diversifying_asset, weight_base_portfolio, number_of_years = 5)
+        sys.exit("Monte Carlo simulation query code to be completed. Thank you for choosing our services")
     elif first_action == "Add/remove tickers":
         run_add_and_remove_function()
 
@@ -221,7 +234,7 @@ def age_menu():
 
     age_action = questionary.select(
         "Please select your age",
-        choices = ["18 - 30","30 - 50","50 - 70","> 70"]
+        choices = ["18 - 30", "30 - 50", "50 - 70", "> 70"]
     ).ask()
 
     if age_action == "18 - 30":
