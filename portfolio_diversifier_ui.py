@@ -8,10 +8,12 @@ import questionary
 from pathlib import Path
 import pandas as pd
 from portfolio_diversifier_ratios_and_calculations import diversify_stocks_with_base_portfolio
+from portfolio_diversifier_ratios_and_calculations import retrieve_yahoo_data_close
 from portfolio_diversifier_forecasting import execute_monte_carlo_simulation
 
 ticker_list = ["qqq", "lqd", "hyg", "tlt", "ief", "shy", "gld", "slv", "efa", "eem", "iyr", "xle", "xlk", "xlf", 'GC=F']
-selected_ticker_list = ['shy', 'gld', 'tlt']
+#selected_ticker_list = ['shy', 'gld', 'tlt']
+selected_ticker_list = ['tlt']
 tickers = ticker_list
 risk_free_rate = 0.00
 financing_rate = 0.00
@@ -80,15 +82,6 @@ def ratios_menu():
 
 """The function for running the ratios selected."""
 def run_ratios():
-    global base_portfolio_df
-    global new_portfolios_df
-    base_portfolio_name = f'stock_{weight_base_portfolio_stock * 100:.0f}_bond_{weight_base_portfolio_bond * 100:.0f}'
-    risk_return_df, new_risk_return_df, base_portfolio_df, new_portfolios_df = diversify_stocks_with_base_portfolio(
-                                        base_portfolio_name, ticker_list, selected_ticker_list,
-                                        risk_free_rate, financing_rate, weight_diversifying_asset, weight_base_portfolio,
-                                        weight_base_portfolio_stock, weight_base_portfolio_bond,
-                                        ticker_base_portfolio_stock, ticker_base_portfolio_bond,
-                                        start_date, end_date, save_plots = False)
     # Cleans the Dataframe
     ratios_df = pd.DataFrame(load_ratios())
     ratios_df = ratios_df.set_index("ticker")
@@ -220,11 +213,19 @@ def run_final_function():
     elif first_action == "Visualize simulated expected returns":
         print(f"{new_portfolios_df}")
         for ticker in selected_ticker_list:
-            print(f"{new_portfolios_df[ticker]}")
-            print(f"{base_portfolio_df}")
-            daily_returns_df = pd.concat([new_portfolios_df[ticker], base_portfolio_df])
+            ticker_df = retrieve_yahoo_data_close(ticker, start_date, end_date)
+            base_stock_df = retrieve_yahoo_data_close(ticker_base_portfolio_stock, start_date, end_date)
+            base_bond_df = retrieve_yahoo_data_close(ticker_base_portfolio_bond, start_date, end_date)
+            daily_returns_df = pd.concat([ticker_df, base_stock_df, base_bond_df], axis=1)
+            daily_returns_df.columns = [ticker, ticker_base_portfolio_stock, ticker_base_portfolio_bond]
+            daily_returns_df.columns = pd.MultiIndex.from_product([daily_returns_df.columns, ['close']])
+            #daily_returns_df.reset_index(drop=True)
             print(f"{daily_returns_df}")
-            execute_monte_carlo_simulation(daily_returns_df, weight_diversifying_asset, weight_base_portfolio, number_of_years = 5)
+            execute_monte_carlo_simulation(daily_returns_df,
+                                            weight_diversifying_asset,
+                                            weight_base_portfolio * weight_base_portfolio_stock,
+                                            weight_base_portfolio * weight_base_portfolio_bond,
+                                            number_of_years = 5)
         sys.exit("Monte Carlo simulation query code to be completed. Thank you for choosing our services")
     elif first_action == "Add/remove tickers":
         run_add_and_remove_function()
@@ -257,6 +258,17 @@ def age_menu():
     print(f"Based on your age we recomend a portfolio of {recommended_percent}")
 
     return age_action
+
+def calculate_ratios_and_returns_for_diversified_portfolio():
+    global base_portfolio_df
+    global new_portfolios_df
+    base_portfolio_name = f'stock_{weight_base_portfolio_stock * 100:.0f}_bond_{weight_base_portfolio_bond * 100:.0f}'
+    risk_return_df, new_risk_return_df, base_portfolio_df, new_portfolios_df = diversify_stocks_with_base_portfolio(
+                                        base_portfolio_name, ticker_list, selected_ticker_list,
+                                        risk_free_rate, financing_rate, weight_diversifying_asset, weight_base_portfolio,
+                                        weight_base_portfolio_stock, weight_base_portfolio_bond,
+                                        ticker_base_portfolio_stock, ticker_base_portfolio_bond,
+                                        start_date, end_date, save_plots = False)
 
 def allocation_menu():
     "Dialog to select allocation"
@@ -293,6 +305,7 @@ def allocation_menu():
     elif allocation_action == "Enter Manually":
         sys.exit("To Be Impemented")
     
+    calculate_ratios_and_returns_for_diversified_portfolio()
     run_final_function()
     return allocation_action
     
@@ -307,6 +320,7 @@ def run_age_function():
     if question == True:
         allocation_menu()
     else:
+        calculate_ratios_and_returns_for_diversified_portfolio()
         run_final_function()
 
 if __name__ == "__main__":

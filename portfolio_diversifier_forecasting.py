@@ -8,21 +8,27 @@ from MCForecastTools import MCSimulation
 # from daily_returns_df
 number_of_trading_days_in_a_year = 252
 
-def execute_monte_carlo_simulation(daily_returns_df, weight_diversifying_asset, weight_base_portfolio, number_of_years = 5):
+def execute_monte_carlo_simulation(daily_returns_df,
+                                    weight_diversifying_asset,
+                                    weight_base_portfolio_stock,
+                                    weight_base_portfolio_bond,
+                                    number_of_years = 5):
+    print("executing monte carlo simulations - weight asset {weight_diverisfying_asset} weight base {weight_base_portfolio}")
     monte_carlo_diversified_portfolio = MCSimulation(
                     portfolio_data = daily_returns_df,
-                    weights = [weight_diversifying_asset, weight_base_portfolio],
-                    num_simulation = 1000,
+                    weights = [weight_diversifying_asset, weight_base_portfolio_stock, weight_base_portfolio_bond],
+                    num_simulation = 500,
                     num_trading_days = number_of_trading_days_in_a_year * number_of_years)
 
+    print("trying to print the results")
     # Printing the first five rows of the simulation input data
-    monte_carlo_diversified_portfolio.portfolio_data.head()
+    print(f'{monte_carlo_diversified_portfolio.portfolio_data.head()}')
 
     # Run a Monte Carlo simulation to forecast five years cumulative returns
-    monte_carlo_diversified_portfolio.calc_cumulative_return()
-
+    results = monte_carlo_diversified_portfolio.calc_cumulative_return()
+    print(f'results')
     # Visualize the Monte Carlo simulation by creating an overlay line plot
-    diversified_portfolio_line_plot = monte_carlo_diversified_portfolio.plot_simulation()
+    #diversified_portfolio_line_plot = monte_carlo_diversified_portfolio.plot_simulation()
 
     # Visualize the Monte Carlo simulation by creating a histogram
     diversified_portfolio_distribution_plot = monte_carlo_diversified_portfolio.plot_distribution()
