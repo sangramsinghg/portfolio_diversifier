@@ -32,6 +32,18 @@ def retrieve_yahoo_data(ticker = 'spy', start_date = '2007-07-01', end_date = '2
     except Exception as ex:
         print(f"Sorry, Data not available for '{ticker}': Exception is {ex}")
 
+def retrieve_yahoo_data_close(ticker = 'spy', start_date = '2007-07-01', end_date = '2020-12-31'):
+    try:
+        yahoo_data = yf.Ticker(ticker)
+        print(f"Ticker is {ticker}")
+        price_df = yahoo_data.history(start=start_date, end=end_date).Close
+        price_df.name = ticker
+        if price_df.shape[0] == 0:
+            raise Exception("No Prices.")
+        return price_df
+    except Exception as ex:
+        print(f"Sorry, Data not available for '{ticker}': Exception is {ex}")
+
 def target_downside_deviation(df, minimum_acceptable_return = 0, periodicity=252):
     df_diff = df - minimum_acceptable_return
     df_positive_excess_return = np.where(df_diff < 0, df_diff, 0)

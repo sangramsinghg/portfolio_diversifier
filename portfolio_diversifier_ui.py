@@ -8,6 +8,7 @@ import questionary
 from pathlib import Path
 import pandas as pd
 from portfolio_diversifier_ratios_and_calculations import diversify_stocks_with_base_portfolio
+from portfolio_diversifier_ratios_and_calculations import retrieve_yahoo_data_close
 from portfolio_diversifier_forecasting import execute_monte_carlo_simulation
 
 ticker_list = ["qqq", "lqd", "hyg", "tlt", "ief", "shy", "gld", "slv", "efa", "eem", "iyr", "xle", "xlk", "xlf", 'GC=F']
@@ -212,14 +213,19 @@ def run_final_function():
     elif first_action == "Visualize simulated expected returns":
         print(f"{new_portfolios_df}")
         for ticker in selected_ticker_list:
-            daily_returns_df = pd.concat([new_portfolios_df[ticker], base_portfolio_df], axis=1)
-            daily_returns_df.columns = [ticker, 'base']
+            ticker_df = retrieve_yahoo_data_close(ticker, start_date, end_date)
+            base_stock_df = retrieve_yahoo_data_close(ticker_base_portfolio_stock, start_date, end_date)
+            base_bond_df = retrieve_yahoo_data_close(ticker_base_portfolio_bond, start_date, end_date)
+            daily_returns_df = pd.concat([ticker_df, base_stock_df, base_bond_df], axis=1)
+            daily_returns_df.columns = [ticker, ticker_base_portfolio_stock, ticker_base_portfolio_bond]
             daily_returns_df.columns = pd.MultiIndex.from_product([daily_returns_df.columns, ['close']])
             #daily_returns_df.reset_index(drop=True)
-            print(f"{base_portfolio_df}")
-            print(f"{new_portfolios_df[ticker]}")
             print(f"{daily_returns_df}")
-            execute_monte_carlo_simulation(daily_returns_df, weight_diversifying_asset, weight_base_portfolio, number_of_years = 5)
+            execute_monte_carlo_simulation(daily_returns_df,
+                                            weight_diversifying_asset,
+                                            weight_base_portfolio * weight_base_portfolio_stock,
+                                            weight_base_portfolio * weight_base_portfolio_bond,
+                                            number_of_years = 5)
         sys.exit("Monte Carlo simulation query code to be completed. Thank you for choosing our services")
     elif first_action == "Add/remove tickers":
         run_add_and_remove_function()
