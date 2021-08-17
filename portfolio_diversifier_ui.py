@@ -13,8 +13,8 @@ from portfolio_diversifier_forecasting import execute_monte_carlo_simulation
 
 ticker_list = ["qqq", "lqd", "hyg", "tlt", "ief", "shy", "gld", "slv", "efa", "eem", "iyr", "xle", "xlk", "xlf", 'GC=F']
 #selected_ticker_list = ['shy', 'gld', 'tlt']
-selected_ticker_list = ['tlt']
-tickers = ticker_list
+selected_ticker_list = ['shy', 'gld', 'tlt']
+tickers = selected_ticker_list
 risk_free_rate = 0.00
 financing_rate = 0.00
 weight_diversifying_asset = 0.20
@@ -64,7 +64,7 @@ def load_ratios():
                 "+Ret_To_MaxDD" : ret_to_maxdd,
                 "Sharpe" : sharpe,
                 "Sortino" : sortino,
-                "Max_DD" : max_dd
+                "Max_DD" : max_dd,
             }
             ratios.append(ratio)
         return ratios
@@ -74,11 +74,12 @@ def load_ratios():
 def ratios_menu():
     "Dialog to select ratios"
 
-    ratios_action = questionary.select(
+    ratios_action = questionary.checkbox(
         "Which of the following ratios would you like to visualize?",
-        choices = ["WABP","+Sortino","+Ret_To_MaxDD","Sharpe","Sortino","Max_DD"]
+        choices = ["WARP","+Sortino","+Ret_To_MaxDD","Sharpe","Sortino","Max_DD"]
     ).ask()
     return ratios_action
+
 
 """The function for running the ratios selected."""
 def run_ratios():
@@ -87,21 +88,24 @@ def run_ratios():
     ratios_df = ratios_df.set_index("ticker")
     ratios_df_clean = ratios_df.loc[tickers]
 
-    print(
-        f"""TODO: ratios df clean
-        {ratios_df_clean}
-        """
-    )
-
     # Initiates action based on selected ratios
     ratios_action = ratios_menu()
 
+    #Functions to make a choice to sort the values
+    if len(ratios_action) > 1:
+        sort_action = questionary.select(
+            "Which of the following ratios would you like to sort by?",
+            choices = ratios_action
+        ).ask()
+    elif len(ratios_action) == 1:
+        sort_action = ratios_action
+
     print(f"Ratios actions {ratios_action}\n")
     ratios_selected = ratios_df_clean[ratios_action]
-    if ratios_action == "Vol":
-        ratios_selected = ratios_selected.sort_values(ascending=True)
+    if sort_action == "Vol":
+        ratios_selected = ratios_selected.sort_values(by=sort_action, ascending=True)
     else:
-        ratios_selected = ratios_selected.sort_values(ascending=False)
+        ratios_selected = ratios_selected.sort_values(by=sort_action, ascending=False)
 
     print(
         f"""Please see the ratios selected below:
@@ -212,7 +216,7 @@ def run_final_function():
         run_ratios_function()
     elif first_action == "Visualize simulated expected returns":
         print(f"{new_portfolios_df}")
-        for ticker in selected_ticker_list:
+        for ticker in tickers:
             ticker_df = retrieve_yahoo_data_close(ticker, start_date, end_date)
             base_stock_df = retrieve_yahoo_data_close(ticker_base_portfolio_stock, start_date, end_date)
             base_bond_df = retrieve_yahoo_data_close(ticker_base_portfolio_bond, start_date, end_date)
@@ -220,7 +224,7 @@ def run_final_function():
             daily_returns_df.columns = [ticker, ticker_base_portfolio_stock, ticker_base_portfolio_bond]
             daily_returns_df.columns = pd.MultiIndex.from_product([daily_returns_df.columns, ['close']])
             #daily_returns_df.reset_index(drop=True)
-            print(f"{daily_returns_df}")
+            
             execute_monte_carlo_simulation(daily_returns_df,
                                             weight_diversifying_asset,
                                             weight_base_portfolio * weight_base_portfolio_stock,
