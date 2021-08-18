@@ -8,7 +8,8 @@ from MCForecastTools import MCSimulation
 # from daily_returns_df
 number_of_trading_days_in_a_year = 252
 
-def execute_monte_carlo_simulation(daily_returns_df,
+def execute_monte_carlo_simulation(ticker,
+                                    daily_returns_df,
                                     weight_diversifying_asset,
                                     weight_base_portfolio_stock,
                                     weight_base_portfolio_bond,
@@ -38,6 +39,7 @@ def execute_monte_carlo_simulation(daily_returns_df,
 
     # Print the table of summary statistics
     print(diversified_portfolio_table)
+    diversified_portfolio_table.to_csv(f'monte_carlo_simulation_table_{ticker}.csv')
 
     # Using the lower and upper `95%` confidence interval values 
     # (index positions 8 & 9 from the diversified_portfolio_table)

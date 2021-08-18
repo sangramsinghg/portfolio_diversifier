@@ -554,8 +554,8 @@ def save_portfolio_cumulative_data_plots(
     cumulative_returns_2020[base_portfolio_name] = (1 + base_portfolio_df).loc['01-01-2020':'12-31-2020'].cumprod()    
     cumulative_returns_2020_df = pd.DataFrame(cumulative_returns_2020)
     cumulative_returns_selected_2020_df = cumulative_returns_2020_df[selected_ticker_list + [base_portfolio_name]]
-    cumulative_returns_selected_2020_df.to_csv(f"cumulative_returns_selected_2008_2010.csv")
-    cumulative_returns_selected_2020_df.to_csv(f"cumulative_returns_selected_2008_2010_{base_portfolio_name}.csv")
+    cumulative_returns_selected_2020_df.to_csv(f"cumulative_returns_selected_2020.csv")
+    cumulative_returns_selected_2020_df.to_csv(f"cumulative_returns_selected_2020_{base_portfolio_name}.csv")
     
     if save_plot == True:
         plot = cumulative_returns_selected_2020_df.hvplot.line(
