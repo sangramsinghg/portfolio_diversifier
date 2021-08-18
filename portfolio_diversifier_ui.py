@@ -51,7 +51,7 @@ def load_ratios():
         header = next(rows)
         for row in rows:
             ticker = str(row[0])
-            wabp = float(row[3])
+            warp = float(row[3])
             plus_sortino = float(row[4])
             ret_to_maxdd = float(row[5])
             sharpe = float(row[6])
@@ -59,7 +59,7 @@ def load_ratios():
             max_dd = float(row[8])
             ratio = {
                 "ticker" : ticker,
-                "WABP" : wabp,
+                "WARP" : warp,
                 "+Sortino" : plus_sortino,
                 "+Ret_To_MaxDD" : ret_to_maxdd,
                 "Sharpe" : sharpe,
@@ -99,6 +99,8 @@ def run_ratios():
         ).ask()
     elif len(ratios_action) == 1:
         sort_action = ratios_action
+    else:
+        sys.exit(f"No sort_action - len(ratios_action) == {len(ratios_action)}")
 
     print(f"Ratios actions {ratios_action}\n")
     ratios_selected = ratios_df_clean[ratios_action]
@@ -225,7 +227,8 @@ def run_final_function():
             daily_returns_df.columns = pd.MultiIndex.from_product([daily_returns_df.columns, ['close']])
             #daily_returns_df.reset_index(drop=True)
             
-            execute_monte_carlo_simulation(daily_returns_df,
+            execute_monte_carlo_simulation(	ticker,
+                                            daily_returns_df,
                                             weight_diversifying_asset,
                                             weight_base_portfolio * weight_base_portfolio_stock,
                                             weight_base_portfolio * weight_base_portfolio_bond,

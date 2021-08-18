@@ -311,7 +311,7 @@ def wabp_new_portfolio_data(new_asset,
 
 def calculate_risk_return(ticker, ticker_data, base_portfolio, risk_free_rate, financing_rate, weight_asset,
                           weight_base_portfolio, data_periodicity, risk_return_df):
-    risk_return_df.loc[ticker, 'WABP'] = win_above_base_portfolio(
+    risk_return_df.loc[ticker, 'WARP'] = win_above_base_portfolio(
                                                 new_asset = ticker_data, 
                                                 base_portfolio = base_portfolio,
                                                 risk_free_rate = risk_free_rate,
@@ -382,7 +382,7 @@ def calculate_new_risk_return(ticker, ticker_data, base_portfolio, risk_free_rat
                                                                             wnpd.copy(),
                                                                             risk_free = risk_free_rate,
                                                                             periodicity = data_periodicity)
-    new_risk_return_df.loc[ticker, f'WABP_{round(100*weight_asset)}%_asset'] = risk_return_df.loc[ticker, 'WABP']
+    new_risk_return_df.loc[ticker, f'WARP_{round(100*weight_asset)}%_asset'] = risk_return_df.loc[ticker, 'WARP']
 
 
 def retrieve_ticker_data_and_update_risk_return_data_frame(ticker, yahoo,
@@ -448,10 +448,10 @@ def diversify_stocks_with_base_portfolio(
 
     risk_return_df = pd.DataFrame(
                 index = ticker_list,
-                columns = ['Start Date','End Date','WABP','+Sortino','+Ret_To_MaxDD','Sharpe','Sortino','Max_DD'])
+                columns = ['Start Date','End Date','WARP','+Sortino','+Ret_To_MaxDD','Sharpe','Sortino','Max_DD'])
     new_risk_return_df = pd.DataFrame(
                     index = ticker_list,
-                    columns = ['Return','Vol','Sharpe','Sortino','Max_DD','Ret_To_MaxDD',f'WABP_{round(100*weight_asset)}%_asset'])
+                    columns = ['Return','Vol','Sharpe','Sortino','Max_DD','Ret_To_MaxDD',f'WARP_{round(100*weight_asset)}%_asset'])
     ticker_data_dict = {}
     csv_file = ""
 
@@ -462,10 +462,18 @@ def diversify_stocks_with_base_portfolio(
                                             risk_free_rate, financing_rate, weight_asset, weight_base_portfolio,
                                             start_date, end_date,
                                             252)
+    risk_return_reset_index = risk_return_df.reset_index() 
     risk_return_df.to_csv(f"risk_return_{base_portfolio_name}.csv")
     risk_return_df.to_csv(f'risk_return.csv')
+    risk_return_reset_index = risk_return_reset_index.rename(columns = {'index':'ticker'})
+    risk_return_reset_index.to_csv(f"risk_return_dash.csv")
+    
+    new_risk_return_reset_index = new_risk_return_df.reset_index()
     new_risk_return_df.to_csv(f"new_risk_return_{base_portfolio_name}.csv")
     new_risk_return_df.to_csv(f"new_risk_return.csv")
+    new_risk_return_reset_index = new_risk_return_reset_index.rename(columns = {'index':'ticker'})
+    new_risk_return_reset_index.to_csv(f"new_risk_return_dash.csv")
+
     new_portfolios_df = pd.DataFrame(new_portfolios)
     new_portfolios_df.to_csv(f"new_portfolios_{base_portfolio_name}.csv")
     new_portfolios_df.to_csv(f"new_portfolios.csv")
@@ -502,8 +510,8 @@ def save_portfolio_cumulative_data_plots(
     print(f"Sorted by Sharpe:\n{sorted_values}")
     sorted_values = new_risk_return_df.sort_values('Vol', ascending=True).head()
     print(f"Sorted by Vol:\n{sorted_values}")
-    sorted_values = risk_return_df.sort_values('WABP', ascending=False).head()
-    print(f"Sorted by WABP:\n{sorted_values}")
+    sorted_values = risk_return_df.sort_values('WARP', ascending=False).head()
+    print(f"Sorted by WARP:\n{sorted_values}")
     cumulative_returns = {}
     for ticker in ticker_list:
         cumulative_returns[ticker] = (1 + new_portfolios[ticker]).cumprod()
@@ -560,6 +568,24 @@ def save_portfolio_cumulative_data_plots(
     if save_plot == True:
         plot = cumulative_returns_selected_2020_df.hvplot.line(
             title="Cumulative Returns Selected - 2020 - Growth of initial investment of $1",
+            xlabel = "Year",
+            ylabel = "Cumulative Return",
+            height = 450,
+            width = 900)
+        hvplot.save(plot, "cumulative_returns_seleted_2008_2010.csv")
+
+    cumulative_returns_2010_2019 = {}
+    for ticker in ticker_list:
+        cumulative_returns_2010_2019[ticker] = (1 + new_portfolios[ticker].loc['01-01-2010':'12-31-2019']).cumprod()
+    cumulative_returns_2010_2019[base_portfolio_name] = (1 + base_portfolio_df).loc['01-01-2010':'12-31-2019'].cumprod()    
+    cumulative_returns_2010_2019_df = pd.DataFrame(cumulative_returns_2010_2019)
+    cumulative_returns_selected_2010_2019_df = cumulative_returns_2010_2019_df[selected_ticker_list + [base_portfolio_name]]
+    cumulative_returns_selected_2010_2019_df.to_csv(f"cumulative_returns_selected_2010_2019.csv")
+    cumulative_returns_selected_2010_2019_df.to_csv(f"cumulative_returns_selected_2010_2019_{base_portfolio_name}.csv")
+    
+    if save_plot == True:
+        plot = cumulative_returns_selected_2010_2019_df.hvplot.line(
+            title="Cumulative Returns Selected - 2010 to 2019 - Growth of initial investment of $1",
             xlabel = "Year",
             ylabel = "Cumulative Return",
             height = 450,

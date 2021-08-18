@@ -21,13 +21,12 @@ def execute_monte_carlo_simulation(ticker,
                     num_simulation = 500,
                     num_trading_days = number_of_trading_days_in_a_year * number_of_years)
 
-    print("trying to print the results")
     # Printing the first five rows of the simulation input data
     print(f'{monte_carlo_diversified_portfolio.portfolio_data.head()}')
 
     # Run a Monte Carlo simulation to forecast five years cumulative returns
     results = monte_carlo_diversified_portfolio.calc_cumulative_return()
-    print(f'results')
+    print(f'{results}')
     # Visualize the Monte Carlo simulation by creating an overlay line plot
     #diversified_portfolio_line_plot = monte_carlo_diversified_portfolio.plot_simulation()
 
