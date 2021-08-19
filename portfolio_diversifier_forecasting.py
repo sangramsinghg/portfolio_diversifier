@@ -14,7 +14,8 @@ def execute_monte_carlo_simulation(ticker,
                                     weight_base_portfolio_stock,
                                     weight_base_portfolio_bond,
                                     number_of_years = 5):
-    print("executing monte carlo simulations - weight asset {weight_diverisfying_asset} weight base {weight_base_portfolio}")
+    print(f"Forecasting for portfolio compromising {ticker}") 
+    print("weight ticker {weight_diverisfying_asset} weight base portfolio {1 - weight_diversifying_asset}")
     monte_carlo_diversified_portfolio = MCSimulation(
                     portfolio_data = daily_returns_df,
                     weights = [weight_diversifying_asset, weight_base_portfolio_stock, weight_base_portfolio_bond],
@@ -22,11 +23,22 @@ def execute_monte_carlo_simulation(ticker,
                     num_trading_days = number_of_trading_days_in_a_year * number_of_years)
 
     # Printing the first five rows of the simulation input data
-    print(f'{monte_carlo_diversified_portfolio.portfolio_data.head()}')
+    #print(f'{monte_carlo_diversified_portfolio.portfolio_data.head()}')
 
     # Run a Monte Carlo simulation to forecast five years cumulative returns
-    results = monte_carlo_diversified_portfolio.calc_cumulative_return()
-    print(f'{results}')
+    cumulative_returns = monte_carlo_diversified_portfolio.calc_cumulative_return()
+    # print(f'{results}')
+    simulated_selected_returns_data = {
+          "mean": list(monte_carlo_diversified_portfolio.simulated_return.mean(axis=1)),
+          "median": list(monte_carlo_diversified_portfolio.simulated_return.median(axis=1)),
+          "min": list(monte_carlo_diversified_portfolio.simulated_return.min(axis=1)),
+          "max": list(monte_carlo_diversified_portfolio.simulated_return.max(axis=1))
+    }
+
+    # Create a DataFrame with the summary statistics
+    simulated_returns = pd.DataFrame(simulated_selected_returns_data)
+    simulated_returns.to_csv(f'monte_carlo_simulative_returns_{ticker}.csv')
+
     # Visualize the Monte Carlo simulation by creating an overlay line plot
     #diversified_portfolio_line_plot = monte_carlo_diversified_portfolio.plot_simulation()
 
@@ -48,7 +60,7 @@ def execute_monte_carlo_simulation(ticker,
 
     # Print results
     print(f"There is a 95% chance that an initial investment of $10,000 in the portfolio"
-         f" ${diversified_portfolio_ci_lower} and ${diversified_portfolio_ci_upper}.")
+         f" ${diversified_portfolio_ci_lower} and ${diversified_portfolio_ci_upper}\n")
 
 
 

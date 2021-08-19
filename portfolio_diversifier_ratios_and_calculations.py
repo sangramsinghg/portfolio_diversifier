@@ -23,7 +23,7 @@ def sharpe_ratio(df, risk_free=0, periodicity=252):
 def retrieve_yahoo_data(ticker = 'spy', start_date = '2007-07-01', end_date = '2020-12-31'):
     try:
         yahoo_data = yf.Ticker(ticker)
-        print(f"Ticker is {ticker}")
+        print(f"Processing Ticker {ticker}")
         price_df = yahoo_data.history(start=start_date, end=end_date).Close.pct_change()
         price_df.name = ticker
         if price_df.shape[0] == 0:
@@ -35,7 +35,7 @@ def retrieve_yahoo_data(ticker = 'spy', start_date = '2007-07-01', end_date = '2
 def retrieve_yahoo_data_close(ticker = 'spy', start_date = '2007-07-01', end_date = '2020-12-31'):
     try:
         yahoo_data = yf.Ticker(ticker)
-        print(f"Ticker is {ticker}")
+        print(f"Processing Ticker {ticker}")
         price_df = yahoo_data.history(start=start_date, end=end_date).Close
         price_df.name = ticker
         if price_df.shape[0] == 0:
@@ -507,11 +507,11 @@ def save_portfolio_cumulative_data_plots(
                             base_portfolio_name, ticker_list, selected_ticker_list, risk_return_df,
                             new_risk_return_df, base_portfolio_df, new_portfolios, save_plot):
     sorted_values = risk_return_df.sort_values('Sharpe', ascending=False).head()
-    print(f"Sorted by Sharpe:\n{sorted_values}")
+    #print(f"Sorted by Sharpe:\n{sorted_values}")
     sorted_values = new_risk_return_df.sort_values('Vol', ascending=True).head()
-    print(f"Sorted by Vol:\n{sorted_values}")
+    #print(f"Sorted by Vol:\n{sorted_values}")
     sorted_values = risk_return_df.sort_values('WARP', ascending=False).head()
-    print(f"Sorted by WARP:\n{sorted_values}")
+    #print(f"Sorted by WARP:\n{sorted_values}")
     cumulative_returns = {}
     for ticker in ticker_list:
         cumulative_returns[ticker] = (1 + new_portfolios[ticker]).cumprod()

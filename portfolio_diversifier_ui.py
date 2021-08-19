@@ -11,7 +11,7 @@ from portfolio_diversifier_ratios_and_calculations import diversify_stocks_with_
 from portfolio_diversifier_ratios_and_calculations import retrieve_yahoo_data_close
 from portfolio_diversifier_forecasting import execute_monte_carlo_simulation
 
-ticker_list = ["qqq", "lqd", "hyg", "tlt", "ief", "shy", "gld", "slv", "efa", "eem", "iyr", "xle", "xlk", "xlf", 'GC=F']
+ticker_list = ["qqq", "lqd", "hyg", "tlt", "ief", "shy", "gld", "slv", "efa", "eem", "iyr", "xle", "xlk", "xlf"]
 #selected_ticker_list = ['shy', 'gld', 'tlt']
 selected_ticker_list = ['shy', 'gld', 'tlt']
 tickers = selected_ticker_list
@@ -36,7 +36,10 @@ def initial_action():
 
     initial_action = questionary.select(
         "Which of the following would you like to check",
-        choices = ["Check financial ratios", "Visualize simulated expected returns", "Add/remove tickers"]
+        choices = [ "Check financial ratios",
+                    "Forecast using Monte Carlo",
+                    "Visualize results",
+                    "Add/remove tickers"]
     ).ask()
     return initial_action
 
@@ -100,20 +103,20 @@ def run_ratios():
     elif len(ratios_action) == 1:
         sort_action = ratios_action
     else:
-        sys.exit(f"No sort_action - len(ratios_action) == {len(ratios_action)}")
+        print(f"Nothing selected - len(ratios_action) == {len(ratios_action)}")
 
-    print(f"Ratios actions {ratios_action}\n")
-    ratios_selected = ratios_df_clean[ratios_action]
-    if sort_action == "Vol":
-        ratios_selected = ratios_selected.sort_values(by=sort_action, ascending=True)
-    else:
-        ratios_selected = ratios_selected.sort_values(by=sort_action, ascending=False)
+    if len(ratios_action) >= 1:
+        ratios_selected = ratios_df_clean[ratios_action]
+        if sort_action == "Vol":
+            ratios_selected = ratios_selected.sort_values(by=sort_action, ascending=True)
+        else:
+            ratios_selected = ratios_selected.sort_values(by=sort_action, ascending=False)
 
-    print(
-        f"""Please see the ratios selected below:
-        {ratios_selected}
-        """
-    )
+        print(
+            f"""Please see the ratios selected below:
+            {ratios_selected}
+            """
+        )
 
 """Function that runs the code related to selecting ratios, including looping back in case more actions are needed"""
 def run_ratios_function():
@@ -127,7 +130,7 @@ def run_ratios_function():
     if question == True:
         run_final_function()
     else:
-         sys.exit(
+        sys.exit(
         "Thank you for choosing our services"
     )
 
@@ -216,8 +219,8 @@ def run_final_function():
 
     if first_action == "Check financial ratios":
         run_ratios_function()
-    elif first_action == "Visualize simulated expected returns":
-        print(f"{new_portfolios_df}")
+    elif first_action == "Forecast using Monte Carlo":
+        #print(f"{new_portfolios_df}")
         for ticker in tickers:
             ticker_df = retrieve_yahoo_data_close(ticker, start_date, end_date)
             base_stock_df = retrieve_yahoo_data_close(ticker_base_portfolio_stock, start_date, end_date)
@@ -233,7 +236,8 @@ def run_final_function():
                                             weight_base_portfolio * weight_base_portfolio_stock,
                                             weight_base_portfolio * weight_base_portfolio_bond,
                                             number_of_years = 5)
-        sys.exit("Monte Carlo simulation query code to be completed. Thank you for choosing our services")
+    elif first_action == 'Visualize results':
+        sys.exit("To be implemented")
     elif first_action == "Add/remove tickers":
         run_add_and_remove_function()
 
@@ -310,7 +314,18 @@ def allocation_menu():
         weight_base_portfolio_stock = 0.00
         weight_base_portfolio_bond  = 1.00
     elif allocation_action == "Enter Manually":
-        sys.exit("To Be Impemented")
+        try:
+            stock_ratio = questionary.text("Please enter the stock ratio (0.00 to 1.00)?").ask()
+            if float(stock_ratio) >= 0.00 & float(stock_ratio) <= 1.00:
+                weight_base_portfolio_stock = stock_ratio
+                weight_base_portfolio_bond = 1.00 - weight_base_portfolio_stock
+            else:
+                weight_base_portfolio_stock = 0.60
+                weight_base_portfolio_bond  = 0.40
+        except:
+            print("Selecting the default 60/40 portfolio")
+            weight_base_portfolio_stock = 0.60
+            weight_base_portfolio_bond  = 0.40
     
     calculate_ratios_and_returns_for_diversified_portfolio()
     run_final_function()
