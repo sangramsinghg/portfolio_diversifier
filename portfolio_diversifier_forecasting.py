@@ -15,7 +15,7 @@ def execute_monte_carlo_simulation(ticker,
                                     weight_base_portfolio_bond,
                                     number_of_years = 5):
     print(f"Forecasting for portfolio compromising {ticker}") 
-    print("weight ticker {weight_diverisfying_asset} weight base portfolio {1 - weight_diversifying_asset}")
+    print(f"weight ticker {weight_diverisfying_asset} weight base portfolio {1.00 - weight_diversifying_asset}")
     monte_carlo_diversified_portfolio = MCSimulation(
                     portfolio_data = daily_returns_df,
                     weights = [weight_diversifying_asset, weight_base_portfolio_stock, weight_base_portfolio_bond],

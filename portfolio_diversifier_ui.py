@@ -113,8 +113,7 @@ def run_ratios():
             ratios_selected = ratios_selected.sort_values(by=sort_action, ascending=False)
 
         print(
-            f"""Please see the ratios selected below:
-            {ratios_selected}
+            f"""Please see the ratios selected below:\n{ratios_selected}
             """
         )
 
@@ -161,7 +160,8 @@ def add_ticker():
         choices = (all_tickers)
     ).ask()
 
-    print(f"Add ticker action is {add_ticker_action}\n")
+    print(f"""
+    Add tickers {add_ticker_action}\n""")
     return add_ticker_action
 
 def run_add_tickers():
@@ -185,7 +185,8 @@ def remove_ticker():
         choices = (tickers)
     ).ask()
 
-    print(f"Remove ticker action is {remove_ticker_action}\n")
+    print(f"""
+    Removed ticker {remove_ticker_action}\n""")
     return remove_ticker_action
 
 def run_remove_tickers():
@@ -220,7 +221,6 @@ def run_final_function():
     if first_action == "Check financial ratios":
         run_ratios_function()
     elif first_action == "Forecast using Monte Carlo":
-        #print(f"{new_portfolios_df}")
         for ticker in tickers:
             ticker_df = retrieve_yahoo_data_close(ticker, start_date, end_date)
             base_stock_df = retrieve_yahoo_data_close(ticker_base_portfolio_stock, start_date, end_date)
@@ -228,7 +228,6 @@ def run_final_function():
             daily_returns_df = pd.concat([ticker_df, base_stock_df, base_bond_df], axis=1)
             daily_returns_df.columns = [ticker, ticker_base_portfolio_stock, ticker_base_portfolio_bond]
             daily_returns_df.columns = pd.MultiIndex.from_product([daily_returns_df.columns, ['close']])
-            #daily_returns_df.reset_index(drop=True)
             
             execute_monte_carlo_simulation(	ticker,
                                             daily_returns_df,
@@ -243,6 +242,8 @@ def run_final_function():
 
 def age_menu():
     "Dialog to select age"
+    global weight_base_portfolio_stock
+    global weight_base_portfolio_bond
 
     age_action = questionary.select(
         "Please select your age",
@@ -275,7 +276,7 @@ def calculate_ratios_and_returns_for_diversified_portfolio():
     global new_portfolios_df
     base_portfolio_name = f'stock_{weight_base_portfolio_stock * 100:.0f}_bond_{weight_base_portfolio_bond * 100:.0f}'
     risk_return_df, new_risk_return_df, base_portfolio_df, new_portfolios_df = diversify_stocks_with_base_portfolio(
-                                        base_portfolio_name, ticker_list, selected_ticker_list,
+                                        base_portfolio_name, selected_ticker_list, selected_ticker_list,
                                         risk_free_rate, financing_rate, weight_diversifying_asset, weight_base_portfolio,
                                         weight_base_portfolio_stock, weight_base_portfolio_bond,
                                         ticker_base_portfolio_stock, ticker_base_portfolio_bond,
@@ -283,6 +284,8 @@ def calculate_ratios_and_returns_for_diversified_portfolio():
 
 def allocation_menu():
     "Dialog to select allocation"
+    global weight_base_portfolio_stock
+    global weight_base_portfolio_bond
 
     allocation_action = questionary.select(
         "Please select your portfolio allocation",
