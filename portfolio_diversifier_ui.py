@@ -86,6 +86,7 @@ def ratios_menu():
 
 """The function for running the ratios selected."""
 def run_ratios():
+
     # Cleans the Dataframe
     ratios_df = pd.DataFrame(load_ratios())
     ratios_df = ratios_df.set_index("ticker")
@@ -151,7 +152,7 @@ def add_ticker():
     # Cleans the Dataframe
     ratios_df = pd.DataFrame(load_ratios())
     ratios_df = ratios_df.set_index("ticker")
-    all_tickers = ratios_df.index.values.tolist()
+    all_tickers = ticker_list
     for ticker in tickers:
         all_tickers.remove(ticker)
 
@@ -174,6 +175,7 @@ def run_add_tickers():
     print((f"""
     The new list of tickers is:
     {tickers}"""))
+    calculate_ratios_and_returns_for_diversified_portfolio()
     return(tickers)
 
 def remove_ticker():
@@ -199,6 +201,7 @@ def run_remove_tickers():
     print(f"""
     The new list of tickers is:
     {tickers}""")
+    calculate_ratios_and_returns_for_diversified_portfolio()
     return(tickers)
 
 def run_add_and_remove_function():
@@ -244,7 +247,7 @@ def run_final_function():
         question = questionary.confirm("Would you like to perform another action").ask()
 
         """Conditional to determine if the clients wants to do any additional actions"""
-        # For now this will loop to a level lower than required, it is a placeholder to check that the code works as intended
+    
         if question == True:
             run_final_function()
         else:
@@ -334,10 +337,11 @@ def allocation_menu():
         weight_base_portfolio_bond  = 1.00
     elif allocation_action == "Enter Manually":
         try:
-            stock_ratio = questionary.text("Please enter the stock ratio (0.00 to 1.00)?").ask()
-            if float(stock_ratio) >= 0.00 & float(stock_ratio) <= 1.00:
-                weight_base_portfolio_stock = stock_ratio
-                weight_base_portfolio_bond = 1.00 - weight_base_portfolio_stock
+            stock_ratio = questionary.text("Please enter the stock ratio (intergers 0 to 100), otherwise default 60/40 will be selected as default").ask()
+            stock_ratio = int(stock_ratio)
+            if stock_ratio >= 0 & stock_ratio <= 100:
+                weight_base_portfolio_stock = stock_ratio/100
+                weight_base_portfolio_bond = 1.00 - stock_ratio/100
             else:
                 weight_base_portfolio_stock = 0.60
                 weight_base_portfolio_bond  = 0.40
