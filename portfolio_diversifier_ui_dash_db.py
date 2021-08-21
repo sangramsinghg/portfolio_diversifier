@@ -1,3 +1,4 @@
+import csv
 import dash
 import dash_core_components as dcc
 from dash_core_components.Dropdown import Dropdown
@@ -8,6 +9,8 @@ import plotly.express as px
 import dash_bootstrap_components as dbc
 from dash.dependencies import Input, Output
 import dash_table
+from pathlib import Path
+import os
 #from MCForecastTools import plot_simulation
 #Saved Data Files from CSV or DataFrame need to add some sample data for visual help
 #CSV file need help with the explanation of each
@@ -16,9 +19,17 @@ import dash_table
 #data = data.query("") For Rodrigo's quesitons
 
 #print(data_tickers)
+cur_dir = os.getcwd()
+
+def create_full_path(file_name):
+  if os.path.basename(cur_dir) != 'portfolio_diversifier':
+    cur_full_path = os.path.join(cur_dir, "portfolio_diversifier", file_name)
+  else:
+    cur_full_path = os.path.join(cur_dir, file_name)
+  return cur_full_path
 
 #risk return ratio 60 and 40 ratio with all mixes of Tickers 
-risk_return = pd.read_csv("risk_ret.csv")
+risk_return = pd.read_csv(create_full_path("risk_return.csv"))
 column_names = ['Tickers','Start Date','End Date','WARP','+Sortino','+Ret_To_MaxDD','Sharpe','Sortino','Max_DD']
 risk_return.columns = column_names
 
@@ -46,34 +57,37 @@ fig_bar_sortino = px.bar(risk_return,
    title="Risk and return looking at Sortino Ratio", template='plotly_dark')
 
 #Cumulative Returns
-cumulative_total= pd.read_csv('cumulative_returns_selected.csv',index_col='Date')
+cumulative_total= pd.read_csv(create_full_path('cumulative_returns_selected.csv'),index_col='Date')
 fig_cumulative_total = px.line(cumulative_total,
  title='Cumulative Returns since 2008 to 2020', template='plotly_dark')
 
-cumulative_bull= pd.read_csv('cumulative_returns_selected_2010_2019.csv',index_col='Date')
+cumulative_bull= pd.read_csv(create_full_path('cumulative_returns_selected_2010_2019.csv'),index_col='Date')
 fig_cumulative_bull = px.line(cumulative_bull,
                             title='Cumulative returns would be in a bull market 10-19')
 
-cumulative_bear= pd.read_csv('cumulative_returns_selected_2008_2009.csv', index_col='Date')
+cumulative_bear= pd.read_csv(create_full_path('cumulative_returns_selected_2008_2009.csv'), index_col='Date')
 fig_cumulative_bear= px.line(cumulative_bear,
  title='Cumulative Returns during a bear market 08-09', template='plotly_dark')
 
+selected_tickers = []
+file = open(create_full_path('selected_tickers.csv'), 'r', newline = '')
+with file:
+  reader = csv.reader(file, delimiter=',')
+  for row in reader:
+    selected_tickers = selected_tickers + row
+
 #MonteCarlo Forcasting
-mc_gld_table = pd.read_csv('monte_carlo_simulation_table_gld.csv')
-mc_gld_table.columns= ['type', 'value']
-mc_gld = pd.read_csv('monte_carlo_simulative_returns_gld.csv')
-mc_gld.columns= ['Trading Days','mean','median','min','max']
-mc_gld.set_index('Trading Days',inplace=True)
-fig_mc_gld = px.line(mc_gld, y=['max','min','mean','median'], template='plotly_dark')
-
-mc_shy = pd.read_csv('monte_carlo_simulative_returns_shy.csv')
-fig_mc_shy = px.line(mc_shy, y=['max','min','mean','median'])
-
-mc_tlt= pd.read_csv('monte_carlo_simulative_returns_tlt.csv')
-fig_mc_tlt = px.line(mc_tlt,  y=['max','min','mean','median'], template='plotly_dark')
-
-
-
+i = 0
+for ticker in selected_tickers:
+  globals()[f'mc_{ticker}_table'] = pd.read_csv(create_full_path(f"monte_carlo_simulation_table_{ticker}.csv"))
+  globals()[f'mc_{ticker}_table'].columns= ['type', 'value']
+  globals()[f'mc_{ticker}'] = pd.read_csv(create_full_path(f'monte_carlo_simulative_returns_{ticker}.csv'))
+  globals()[f'mc_{ticker}'].columns= ['Trading Days','mean','median','min','max']
+  globals()[f'mc_{ticker}'].set_index('Trading Days',inplace=True)
+  if i%2 == 0:
+    globals()[f'fig_mc_{ticker}'] = px.line(globals()[f'mc_{ticker}'], y=['max','min','mean','median'], template='plotly_dark')
+  else:
+    globals()[f'fig_mc_{ticker}'] = px.line(globals()[f'mc_{ticker}'], y=['max','min','mean','median'])
 
 
 

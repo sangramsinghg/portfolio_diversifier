@@ -235,8 +235,24 @@ def run_final_function():
                                             weight_base_portfolio * weight_base_portfolio_stock,
                                             weight_base_portfolio * weight_base_portfolio_bond,
                                             number_of_years = 5)
+
+        file = open('selected_tickers.csv', 'w', newline = '\n')
+        with file:
+            writer = csv.writer(file)
+            writer.writerow(tickers)
+
+        question = questionary.confirm("Would you like to perform another action").ask()
+
+        """Conditional to determine if the clients wants to do any additional actions"""
+        # For now this will loop to a level lower than required, it is a placeholder to check that the code works as intended
+        if question == True:
+            run_final_function()
+        else:
+            sys.exit(
+            "Thank you for choosing our services"
+            )
     elif first_action == 'Visualize results':
-        sys.exit("To be implemented")
+        sys.exit("Please type python portfolio_diversifier_ui_dash_db.py on the command line")
     elif first_action == "Add/remove tickers":
         run_add_and_remove_function()
 

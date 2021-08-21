@@ -14,8 +14,8 @@ def execute_monte_carlo_simulation(ticker,
                                     weight_base_portfolio_stock,
                                     weight_base_portfolio_bond,
                                     number_of_years = 5):
-    print(f"Forecasting for portfolio compromising {ticker}") 
-    print(f"weight ticker {weight_diverisfying_asset} weight base portfolio {1.00 - weight_diversifying_asset}")
+    print(f"Forecasting for portfolio compromising {ticker} {weight_diversifying_asset * 100:.02f}%") 
+    print(f"weight stock {weight_base_portfolio_stock * 100:.02f}% weight bond {weight_base_portfolio_bond * 100:.02f}%")
     monte_carlo_diversified_portfolio = MCSimulation(
                     portfolio_data = daily_returns_df,
                     weights = [weight_diversifying_asset, weight_base_portfolio_stock, weight_base_portfolio_bond],
@@ -49,6 +49,7 @@ def execute_monte_carlo_simulation(ticker,
     diversified_portfolio_table = monte_carlo_diversified_portfolio.summarize_cumulative_return()
 
     # Print the table of summary statistics
+    print(f"\nResults Table: ")
     print(diversified_portfolio_table)
     diversified_portfolio_table.to_csv(f'monte_carlo_simulation_table_{ticker}.csv')
 
@@ -59,8 +60,8 @@ def execute_monte_carlo_simulation(ticker,
     diversified_portfolio_ci_upper = round(diversified_portfolio_table[9]*10000,2)
 
     # Print results
-    print(f"There is a 95% chance that an initial investment of $10,000 in the portfolio"
-         f" ${diversified_portfolio_ci_lower} and ${diversified_portfolio_ci_upper}\n")
+    print(f"There is a 95% chance that an initial investment of $10,000 in the portfolio will result in "
+         f" ${diversified_portfolio_ci_lower} to ${diversified_portfolio_ci_upper} in returns\n")
 
 
 
