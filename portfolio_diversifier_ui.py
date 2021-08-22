@@ -39,7 +39,8 @@ def initial_action():
         choices = [ "Check financial ratios",
                     "Forecast using Monte Carlo",
                     "Visualize results",
-                    "Add/remove tickers"]
+                    "Add/remove tickers",
+                    "Exit"]
     ).ask()
     return initial_action
 
@@ -258,6 +259,8 @@ def run_final_function():
         sys.exit("Please type python portfolio_diversifier_ui_dash_db.py on the command line")
     elif first_action == "Add/remove tickers":
         run_add_and_remove_function()
+    elif first_action == "Exit":
+        sys.exit("Thank you for using our service")
 
 def age_menu():
     "Dialog to select age"
@@ -337,12 +340,14 @@ def allocation_menu():
         weight_base_portfolio_bond  = 1.00
     elif allocation_action == "Enter Manually":
         try:
-            stock_ratio = questionary.text("Please enter the stock ratio (intergers 0 to 100), otherwise default 60/40 will be selected as default").ask()
-            stock_ratio = int(stock_ratio)
-            if stock_ratio >= 0 & stock_ratio <= 100:
-                weight_base_portfolio_stock = stock_ratio/100
-                weight_base_portfolio_bond = 1.00 - stock_ratio/100
+            stock_percentage = questionary.text("Please enter the stock percentage (0 to 100: default 60) ").ask()
+            stock_percentage = float(stock_percentage)
+            if stock_percentage >= 0.00 and stock_percentage <= 100.00:
+                print(f"Selecting  {stock_percentage:.02f}% stocks/{100.00-stock_percentage:.02f}% bonds")
+                weight_base_portfolio_stock = stock_percentage/100
+                weight_base_portfolio_bond = 1.00 - stock_percentage/100
             else:
+                print("Selecting the default 60/40 portfolio due to invalid entry")
                 weight_base_portfolio_stock = 0.60
                 weight_base_portfolio_bond  = 0.40
         except:
