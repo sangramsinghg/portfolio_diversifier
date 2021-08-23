@@ -1,5 +1,5 @@
-# portfolio_diversifier
-Portfolio Diversifier
+# Portfolio Diversifier
+Portfolio Diversifier helps retail customers easily analyze the diversification value of any ticker using WARP and other ratios and provides recommendations based on WARP. It also allows the customers to forecast the portfolio performance using Monte Carlo
 
 ## Why not use Sharpe for picking stocks:
 
@@ -73,6 +73,11 @@ There is a 95% chance that an initial investment of $10,000 in the portfolio Ret
 ## Dash Output:
 
 ![Dash Output](Images/dash_output.png)
+
+## Planned Additions
+
+Portfolio rebalancing on a daily/monthly basis
+Portfolio optimization based on tickers selected.
 
 ---
 
