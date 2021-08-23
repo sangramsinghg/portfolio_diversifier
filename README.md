@@ -1,34 +1,51 @@
 # portfolio_diversifier
 Portfolio Diversifier
 
-Why not use Sharpe for picking stocks:
+## Why not use Sharpe for picking stocks:
 
 ![Sharpe 1](Images/why_not_sharpe_1.png)
 ![Sharpe 2](Images/why_not_sharpe_2.png)
 
-What is WARP (Win Above Replacement Portfolio - courtesy Artemis Capital Management):
+## What is the solution? WARP (Win Above Replacement Portfolio - courtesy Artemis Capital Management):
 
 ![WARP](Images/warp.png)
 
-Picking Stocks based on WARP vs Sharpe:
+WARP > 0 
+ASSET IS IMPROVING YOUR PORTFOLIO BY INCREASING: 
+            1. Return to Downside Volatility; 
+            2. Return to MAX Drawdown; 
+            3. Or BOTH. 
+WARP < 0 
+ASSET HURTS YOUR PORTFOLIO BY REPLICATING EXISTING EXPOSURES AND/OR INCREASING DRAWDOWNS AND VOLATILITY.
+
+## Picking Stocks based on WARP vs Sharpe:
 
 ![Picking Stocks using WARP](Images/picking_stocks_using_warp.png)
+
+WARP > 0 
+ASSET IS IMPROVING YOUR PORTFOLIO BY INCREASING: 
+            1. Return to Downside Volatility; 
+            2. Return to MAX Drawdown; 
+            3. Or BOTH. 
+WARP < 0 
+ASSET HURTS YOUR PORTFOLIO BY REPLICATING EXISTING EXPOSURES AND/OR INCREASING DRAWDOWNS AND VOLATILITY.
+
 ![Picking Stocks using Sharpe](Images/picking_stocks_using_sharpe.png)
 
-Analyzing stocks historically:
+## Analyzing stocks historically:
 
 portfolio mixing 20% tlt (picked based on WARP) with 80% spy performs better than portfolio mixing 20% shy (picked based on Sharpe) with 80% spy
 
-2008 to 2020:
+### 2008 to 2020:
 ![Historic Performance in 2008 to 2020](Images/analyzing_stocks_historically_from_2008_to_2020.png)
 
-2008 to 2009:
+### 2008 to 2009:
 ![Historic Performance in 2008 to 2009](Images/analyzing_stocks_historically_from_2008_to_2009.png)
 
-2020:
+### 2020:
 ![Historic Performance in 2020](Images/analyzing_stocks_historically_in_2020.png)
 
-Forecasting for a 20% tlt 48% spy 32% ier portfolio using Monte Carlo - 
+## Forecasting for a 20% tlt 48% spy 32% ier portfolio using Monte Carlo - 
 ![Forecasting 20% tlt 48% spy 32% ier](Images/forecasting_of_a_20_tlt_48_spy_32_ier_portfolio_using_monte_carlo.png)
 
 count        500 
@@ -45,15 +62,15 @@ Upper        2.41
 
 There is a 95% chance that an initial investment of $10,000 in the portfolio Returns $9071.96 to $24128.53.
 
-Identifying Target Customers for the MVP:
+## Identifying Target Customers for the MVP:
 
 ![Target Customer SF](Images/identifying_target_customers_in_sf.png)
 
-UI Flow:
+## UI Flow:
 
 ![UI Flow](Images/ui_flow.png)
 
-Dash Output:
+## Dash Output:
 
 ![Dash Output](Images/dash_output.png)
 
