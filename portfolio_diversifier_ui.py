@@ -263,7 +263,7 @@ def run_final_function():
             "Thank you for choosing our services"
             )
     elif first_action == 'Visualize results':
-        sys.exit("Please type python portfolio_diversifier_ui_dash_db.py on the command line")
+        sys.exit("Please type python <full path of the portfolio diversifier folder>/portfolio_diversifier_ui_dash_db.py on the command line")
     elif first_action == "Add/remove tickers":
         run_add_and_remove_function()
     elif first_action == "Exit":
