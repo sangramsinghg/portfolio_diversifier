@@ -3,8 +3,8 @@ Portfolio Diversifier
 
 Why not use Sharpe for picking stocks:
 
-![Sharpe 1](Images/sharpe_1.png)
-![Sharpe 2](Images/sharpe_2.png)
+![Sharpe 1](Images/why_not_sharpe_1.png)
+![Sharpe 2](Images/why_not_sharpe_2.png)
 
 What is WARP (Win Above Replacement Portfolio - courtesy Artemis Capital Management):
 
@@ -144,10 +144,10 @@ python portfolio_diversifier_ui_dash_db.py
 
 ## Contributors
 
-Sangram Singh (sangramsinghg@yahoo.com)
-Dylan Bowsky
-Rodrigo Monge
-George Kraft
+* Sangram Singh (sangramsinghg@yahoo.com)
+* Dylan Bowsky
+* Rodrigo Monge
+* George Kraft
 
 ---
 
