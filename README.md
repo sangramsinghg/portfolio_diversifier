@@ -215,6 +215,8 @@ python 'C:\Users\sangrams\git\portfolio_diversifier\portfolio_diversifier_ui_das
 Dash Usage:
 ![Dash Output](Images/dash_output.png)
 
+NOTE: the user needs to run the portfolio_diversifier_ui.py before running the dash
+
 ---
 
 ## Contributors

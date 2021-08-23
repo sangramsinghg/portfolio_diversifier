@@ -387,6 +387,7 @@ def run_age_function():
         calculate_ratios_and_returns_for_diversified_portfolio()
         run_final_function()
 
+# the main entry point for the program
 if __name__ == "__main__":
     print(f"Main Function\n")
     fire.Fire(run_age_function())

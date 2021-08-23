@@ -19,14 +19,8 @@ from dash.dependencies import Input, Output
 import dash_table
 from pathlib import Path
 import os
-#from MCForecastTools import plot_simulation
-#Saved Data Files from CSV or DataFrame need to add some sample data for visual help
-#CSV file need help with the explanation of each
 
-#Different questions we can use for the data frame
-#data = data.query("") For Rodrigo's quesitons
-
-#print(data_tickers)
+# get current directory
 cur_dir = os.getcwd()
 
 # create the full path - if the cur dir does not included portfolio diversifier then add it
@@ -37,7 +31,7 @@ def create_full_path(file_name):
     cur_full_path = os.path.join(cur_dir, file_name)
   return cur_full_path
 
-#risk return ratio 60 and 40 ratio with all mixes of Tickers 
+#Read risk return ratio with all mixes of Tickers 
 risk_return = pd.read_csv(create_full_path("risk_return.csv"))
 column_names = ['Tickers','Start Date','End Date','WARP','+Sortino','+Ret_To_MaxDD','Sharpe','Sortino','Max_DD']
 risk_return.columns = column_names
@@ -86,7 +80,7 @@ cumulative_2020= pd.read_csv(create_full_path('cumulative_returns_selected_2020.
 fig_cumulative_2020= px.line(cumulative_2020,
  title='Cumulative Returns during Pandemic of 2020')
 
-# Read tickers to be used for displaying
+# Read tickers to be used for reading and displaying monte carlo simulations
 selected_tickers = []
 file = open(create_full_path('selected_tickers.csv'), 'r', newline = '')
 with file:
@@ -94,7 +88,7 @@ with file:
   for row in reader:
     selected_tickers = selected_tickers + row
 
-# MonteCarlo Forcasting
+# Use tickers to read appropriate montecarlo files and set up the right tables
 i = 0
 for ticker in selected_tickers:
   globals()[f'mc_{ticker}_table'] = pd.read_csv(create_full_path(f"monte_carlo_simulation_table_{ticker}.csv"))
@@ -202,6 +196,7 @@ app.layout = html.Div(id="output_container",
           #             columns=[{"name": 'type', "id": 'value'}],
           #             data=mc_gld_table.to_dict(),
           # ),
+          # Hard coded for now - future improvement is to dynamically load thse figures
                 dcc.Graph(figure=fig_mc_gld),
                 dcc.Graph(figure=fig_mc_shy),
                 dcc.Graph(figure=fig_mc_tlt),
@@ -211,7 +206,7 @@ app.layout = html.Div(id="output_container",
     ]
 )
 
-
+# The dash application callback 
 @app.callback(Output('tabs_selection', 'children'),
               Input('tabs', 'value'))
 def render_content(tab):
@@ -230,7 +225,7 @@ def render_content(tab):
  
  
  
-
+# Html code
 html_run = '''
 HTML
 <div>
@@ -240,5 +235,6 @@ HTML
 <div>
 '''
 
+# Main entry point
 if __name__ == "__main__":
     app.run_server(debug=True)
