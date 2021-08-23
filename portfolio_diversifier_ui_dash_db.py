@@ -74,12 +74,17 @@ fig_cumulative_total = px.line(cumulative_total,
 # Read cumulative returns from 2010 to 2019 and plot  
 cumulative_bull= pd.read_csv(create_full_path('cumulative_returns_selected_2010_2019.csv'),index_col='Date')
 fig_cumulative_bull = px.line(cumulative_bull,
-                            title='Cumulative returns would be in a bull market 10-19')
+                            title='Cumulative returns would be in a bull market 2010-2019')
 
 # Read cumulative returns from 2008 to 2009 and plot
 cumulative_bear= pd.read_csv(create_full_path('cumulative_returns_selected_2008_2009.csv'), index_col='Date')
 fig_cumulative_bear= px.line(cumulative_bear,
- title='Cumulative Returns during a bear market 08-09', template='plotly_dark')
+ title='Cumulative Returns during a bear market 2008-2009', template='plotly_dark')
+
+# Read cumulative returns from 2020 and plot
+cumulative_2020= pd.read_csv(create_full_path('cumulative_returns_selected_2020.csv'), index_col='Date')
+fig_cumulative_2020= px.line(cumulative_2020,
+ title='Cumulative Returns during Pandemic of 2020')
 
 # Read tickers to be used for displaying
 selected_tickers = []
@@ -189,7 +194,8 @@ app.layout = html.Div(id="output_container",
             dcc.Tab(label='Cumulative returns', value= 'tab-2', children=[
                  dcc.Graph(figure=fig_cumulative_total),
                  dcc.Graph(figure=fig_cumulative_bull),
-                 dcc.Graph(figure=fig_cumulative_bear)
+                 dcc.Graph(figure=fig_cumulative_bear),
+                 dcc.Graph(figure=fig_cumulative_2020),
             ]),
             dcc.Tab(label='Forcasting Results', value='tab-3', children=[
           #     dash_table.DataTable(id='table',
