@@ -78,6 +78,15 @@ There is a 95% chance that an initial investment of $10,000 in the portfolio Ret
 
 * Portfolio rebalancing on a daily/monthly basis
 * Portfolio optimization based on tickers selected.
+* More UI Flexibility
+* Explore long volatility and other funds.
+* Add more ratios such as Treynor, Information, etc. for comparison and ticker picking.
+
+## Conclusions
+
+* Out of the diversifiers tlt performs best
+* WARP is the best ratio to identify best diversifiers.
+* diversifiers identified by WARP perform better than identified using other ratios Sharpe, etc. 
 
 ---
 
