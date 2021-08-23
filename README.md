@@ -1,6 +1,15 @@
 # Portfolio Diversifier
 Portfolio Diversifier helps retail customers easily analyze the diversification value of any ticker using WARP and other ratios and provides recommendations based on WARP. It also allows the customers to forecast the portfolio performance using Monte Carlo
 
+* Shows why sharpe is not a good tool to pick tickers for diversification
+* What is WARP and why WARP is a better tool to pick tickers for diversification
+* Analyze the 2008 to 2020, 2008 to 2009, 2020 historical market data to show that tickers picked for diversification using WARP perform better than the market and the tickers picked using Sharpe
+* Identifies tlt as the best diversifiers out of a list of diversifiers
+* Forecast results 5 years into the future for a portfolio based on the best diversifier using Monte Carlo simulations.
+* Implements a UI using Questionary to allow retail customer to easily navigate their diversification requirements in a guided manner with recommendations.
+* Dash visualizes the Risk Return Ratios, Cumulative Returns and Forecasting analysis. 
+* Identify the target customers for the application.
+
 ## Why not use Sharpe for picking stocks:
 
 ![Sharpe 1](Images/why_not_sharpe_1.png)
@@ -30,7 +39,16 @@ Portfolio Diversifier helps retail customers easily analyze the diversification 
 #### WARP < 0 
 ##### ASSET HURTS YOUR PORTFOLIO BY REPLICATING EXISTING EXPOSURES AND/OR INCREASING DRAWDOWNS AND VOLATILITY.
 
+Based on WARP, tlt and gld look promising for diversification needs
+
 ![Picking Stocks using Sharpe](Images/picking_stocks_using_sharpe.png)
+
+Based on Sharpe, shy looks promising for diversification needs. 
+
+## Diversifers identified using a known list
+* tlt - 20+ Year Treasury Bond ETF (Identified using WARP)
+* shy - 1-3 Year Treasury Bond ETF (Identified using Sharpe)
+* gld - Gold ETF (Identified using WARP)
 
 ## Analyzing stocks historically:
 
@@ -44,6 +62,8 @@ portfolio mixing 20% tlt (picked based on WARP) with 80% spy performs better tha
 
 ### 2020:
 ![Historic Performance in 2020](Images/analyzing_stocks_historically_in_2020.png)
+
+Historical analysis shows that tlt is the best diversifier performing better than shy and providing more downside protections than shy. Portfolio consisting of 80% S&P 500 and 20% tlt performs better than the S&P 500
 
 ## Forecasting for a 20% tlt 48% spy 32% ier portfolio using Monte Carlo - 
 ![Forecasting 20% tlt 48% spy 32% ier](Images/forecasting_of_a_20_tlt_48_spy_32_ier_portfolio_using_monte_carlo.png)
@@ -59,7 +79,7 @@ portfolio mixing 20% tlt (picked based on WARP) with 80% spy performs better tha
 * 95% CI Lower - 0.91 
 * 95% CI Upper - 2.41
 
-There is a 95% chance that an initial investment of $10,000 in the portfolio Returns $9071.96 to $24128.53.
+There is a 95% chance that an initial investment of $10,000 in the tlt based portfolio Returns $9071.96 to $24128.53
 
 ## Identifying Target Customers for the MVP:
 
@@ -73,19 +93,36 @@ There is a 95% chance that an initial investment of $10,000 in the portfolio Ret
 
 ![Dash Output](Images/dash_output.png)
 
-## Planned Additions
+## Planned Additions/Future Enhancements/Next Steps
 
 * Portfolio rebalancing on a daily/monthly basis
 * Portfolio optimization based on tickers selected.
 * More UI Flexibility
-* Explore long volatility and other funds.
+* Explore long volatility and other funds as diversifiers
 * Add more ratios such as Treynor, Information, etc. for comparison and ticker picking.
+* Provide more flexibility is picking tickers for analysis.
+* Launch Full Web Application
+* Integrate questionary/UI with Dash
+* Make daily updated on ratios.
+* Release the MVP to the early adopters
+* Productize the MVP & Make it web based
+* Add Customized Portfolios & recursively add portfolios
+* Tiered Pricing with Premium Personal & Specialized Support                                            
+* Add options to change portfolio weights.  
 
 ## Conclusions
 
 * Out of the diversifiers tlt performs best
+* portfolio mixing 20% tlt (picked based on WARP) with 80% spy performs better than portfolio mixing 20% shy (picked based on Sharpe) with 80% spy
 * WARP is the best ratio to identify best diversifiers.
-* diversifiers identified by WARP perform better than identified using other ratios Sharpe, etc. 
+* WARP allows us to easily identify a good diversifier and does not suffer from some of the flaws of common ratios such as Sharpe
+* Sharpe is not a good way to identify tickers for diversification.
+* Diversifiers identified by WARP perform better than market and diversifiers identified using other ratios such as Sharpe, etc. 
+* Buena Vista Park and Clarendon Heights in San Francisco are ideal initial neighborhoods to target customers for this application.
+* Questionary and Dash provide a seamless UI/Front end experience for customers to easily navigate through their diversifications requirements and can provide a guided experience with recommendations.
+
+## Power point presentation/Slide Deck
+* [Power Point/Slide Deck](https://github.com/sangramsinghg/portfolio_diversifier/blob/main/Portfolio_Diversifier.pptx?raw=true) - Power Point Slide Deck.
 
 ---
 
@@ -162,13 +199,19 @@ For problems with the installation:
 ```python
 python portfolio_diversifier_ui.py
 ```
-Command Line Usage
+Command Line Usage:
 ![Command Line Usage](Images/command_line_usage.png)
 
 To launch web output using Dash:
 ```python
 python <full path of the portfolio diversifier folder>/portfolio_diversifier_ui_dash_db.py
+
+example:
+python 'C:\Users\sangrams\git\portfolio_diversifier\portfolio_diversifier_ui_dash_db.py'
 ```
+
+Dash Usage:
+![Dash Output](Images/dash_output.png)
 
 ---
 
