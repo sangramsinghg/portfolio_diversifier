@@ -45,7 +45,7 @@ Based on WARP, tlt and gld look promising for diversification needs
 
 Based on Sharpe, shy looks promising for diversification needs. 
 
-## Diversifers identified using a known list
+## Diversifers identified from a known list
 * tlt - 20+ Year Treasury Bond ETF (Identified using WARP)
 * shy - 1-3 Year Treasury Bond ETF (Identified using Sharpe)
 * gld - Gold ETF (Identified using WARP)
@@ -65,7 +65,7 @@ portfolio mixing 20% tlt (picked based on WARP) with 80% spy performs better tha
 
 Historical analysis shows that tlt is the best diversifier performing better than shy and providing more downside protections than shy. Portfolio consisting of 80% S&P 500 and 20% tlt performs better than the S&P 500
 
-## Forecasting for a 20% tlt 48% spy 32% ier portfolio using Monte Carlo - 
+## Forecasting for a 20% tlt (best diversifier from historical analysis) 48% spy 32% ier portfolio using Monte Carlo - 
 ![Forecasting 20% tlt 48% spy 32% ier](Images/forecasting_of_a_20_tlt_48_spy_32_ier_portfolio_using_monte_carlo.png)
 
 * count        - 500 
@@ -84,6 +84,8 @@ There is a 95% chance that an initial investment of $10,000 in the tlt based por
 ## Identifying Target Customers for the MVP:
 
 ![Target Customer SF](Images/identifying_target_customers_in_sf.png)
+
+Buena Vista Park and Clarendon Heights are the ideal neighborhoods based on income and population for our initial targetting of customers.
 
 ## UI Flow:
 
