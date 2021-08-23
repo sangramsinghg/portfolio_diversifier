@@ -48,17 +48,16 @@ portfolio mixing 20% tlt (picked based on WARP) with 80% spy performs better tha
 ## Forecasting for a 20% tlt 48% spy 32% ier portfolio using Monte Carlo - 
 ![Forecasting 20% tlt 48% spy 32% ier](Images/forecasting_of_a_20_tlt_48_spy_32_ier_portfolio_using_monte_carlo.png)
 
-count        500 
-mean         1.55 
-std          0.37
-min          0.69 
-25%          1.29 
-50%          1.51 
-75%          1.76 
-max          2.95 
-95% CI - 
-Lower        0.91 
-Upper        2.41
+* count        500 
+* mean         1.55 
+* std          0.37
+* min          0.69 
+* 25%          1.29 
+* 50%          1.51 
+* 75%          1.76 
+* max          2.95 
+* 95% CI Lower 0.91 
+* 95% CI Upper 2.41
 
 There is a 95% chance that an initial investment of $10,000 in the portfolio Returns $9071.96 to $24128.53.
 
