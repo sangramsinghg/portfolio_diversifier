@@ -10,25 +10,25 @@ Portfolio Diversifier helps retail customers easily analyze the diversification 
 
 ![WARP](Images/warp.png)
 
-WARP > 0 
-ASSET IS IMPROVING YOUR PORTFOLIO BY INCREASING: 
-            1. Return to Downside Volatility; 
-            2. Return to MAX Drawdown; 
-            3. Or BOTH. 
-WARP < 0 
-ASSET HURTS YOUR PORTFOLIO BY REPLICATING EXISTING EXPOSURES AND/OR INCREASING DRAWDOWNS AND VOLATILITY.
+#### WARP > 0 
+##### ASSET IS IMPROVING YOUR PORTFOLIO BY INCREASING: 
+######            1. Return to Downside Volatility; 
+######            2. Return to MAX Drawdown; 
+######            3. Or BOTH. 
+#### WARP < 0 
+##### ASSET HURTS YOUR PORTFOLIO BY REPLICATING EXISTING EXPOSURES AND/OR INCREASING DRAWDOWNS AND VOLATILITY.
 
 ## Picking Stocks based on WARP vs Sharpe:
 
 ![Picking Stocks using WARP](Images/picking_stocks_using_warp.png)
 
-WARP > 0 
-ASSET IS IMPROVING YOUR PORTFOLIO BY INCREASING: 
-            1. Return to Downside Volatility; 
-            2. Return to MAX Drawdown; 
-            3. Or BOTH. 
-WARP < 0 
-ASSET HURTS YOUR PORTFOLIO BY REPLICATING EXISTING EXPOSURES AND/OR INCREASING DRAWDOWNS AND VOLATILITY.
+#### WARP > 0 
+##### ASSET IS IMPROVING YOUR PORTFOLIO BY INCREASING: 
+######            1. Return to Downside Volatility; 
+######            2. Return to MAX Drawdown; 
+######            3. Or BOTH. 
+#### WARP < 0 
+##### ASSET HURTS YOUR PORTFOLIO BY REPLICATING EXISTING EXPOSURES AND/OR INCREASING DRAWDOWNS AND VOLATILITY.
 
 ![Picking Stocks using Sharpe](Images/picking_stocks_using_sharpe.png)
 
