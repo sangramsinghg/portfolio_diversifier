@@ -19,6 +19,7 @@ from dash.dependencies import Input, Output
 import dash_table
 from pathlib import Path
 import os
+import sys
 
 # get current directory
 cur_dir = os.getcwd()
@@ -32,10 +33,12 @@ def create_full_path(file_name):
   return cur_full_path
 
 #Read risk return ratio with all mixes of Tickers 
-risk_return = pd.read_csv(create_full_path("risk_return.csv"))
-column_names = ['Tickers','Start Date','End Date','WARP','+Sortino','+Ret_To_MaxDD','Sharpe','Sortino','Max_DD']
-risk_return.columns = column_names
-
+try:
+  risk_return = pd.read_csv(create_full_path("risk_return.csv"))
+  column_names = ['Tickers','Start Date','End Date','WARP','+Sortino','+Ret_To_MaxDD','Sharpe','Sortino','Max_DD']
+  risk_return.columns = column_names
+except:
+  sys.exit("Please run python portfolio_diviersifier_ui.py")
 
 """Here are all the graphs we will be using for the dash
 as of now we currently have 3 categories with risk return ratio, cumulative return,
@@ -61,37 +64,55 @@ fig_bar_sortino = px.bar(risk_return,
 
 # Cumulative Returns
 # Read Cumulative returns of selected tickers and plot
-cumulative_total= pd.read_csv(create_full_path('cumulative_returns_selected.csv'),index_col='Date')
-fig_cumulative_total = px.line(cumulative_total,
- title='Cumulative Returns since 2008 to 2020', template='plotly_dark')
+try:
+  cumulative_total= pd.read_csv(create_full_path('cumulative_returns_selected.csv'),index_col='Date')
+  fig_cumulative_total = px.line(cumulative_total,
+    title='Cumulative Returns since 2008 to 2020', template='plotly_dark')
+except:
+  sys.exit("Please run python portfolio_diviersifier_ui.py")
 
 # Read cumulative returns from 2010 to 2019 and plot  
-cumulative_bull= pd.read_csv(create_full_path('cumulative_returns_selected_2010_2019.csv'),index_col='Date')
-fig_cumulative_bull = px.line(cumulative_bull,
+try: 
+  cumulative_bull= pd.read_csv(create_full_path('cumulative_returns_selected_2010_2019.csv'),index_col='Date')
+  fig_cumulative_bull = px.line(cumulative_bull,
                             title='Cumulative returns would be in a bull market 2010-2019')
+except:
+  sys.exit("Please run python portfolio_diviersifier_ui.py")
 
 # Read cumulative returns from 2008 to 2009 and plot
-cumulative_bear= pd.read_csv(create_full_path('cumulative_returns_selected_2008_2009.csv'), index_col='Date')
-fig_cumulative_bear= px.line(cumulative_bear,
- title='Cumulative Returns during a bear market 2008-2009', template='plotly_dark')
+try:
+  cumulative_bear= pd.read_csv(create_full_path('cumulative_returns_selected_2008_2009.csv'), index_col='Date')
+  fig_cumulative_bear= px.line(cumulative_bear,
+  title='Cumulative Returns during a bear market 2008-2009', template='plotly_dark')
+except:
+  sys.exit("Please run python portfolio_diviersifier_ui.py")
 
 # Read cumulative returns from 2020 and plot
-cumulative_2020= pd.read_csv(create_full_path('cumulative_returns_selected_2020.csv'), index_col='Date')
-fig_cumulative_2020= px.line(cumulative_2020,
- title='Cumulative Returns during Pandemic of 2020')
+try:
+  cumulative_2020= pd.read_csv(create_full_path('cumulative_returns_selected_2020.csv'), index_col='Date')
+  fig_cumulative_2020= px.line(cumulative_2020,
+    title='Cumulative Returns during Pandemic of 2020')
+except:
+  sys.exit("Please run python portfolio_diviersifier_ui.py")
 
 # Read tickers to be used for reading and displaying monte carlo simulations
 selected_tickers = []
-file = open(create_full_path('selected_tickers.csv'), 'r', newline = '')
-with file:
-  reader = csv.reader(file, delimiter=',')
-  for row in reader:
-    selected_tickers = selected_tickers + row
+try:
+  file = open(create_full_path('selected_tickers.csv'), 'r', newline = '')
+  with file:
+    reader = csv.reader(file, delimiter=',')
+    for row in reader:
+      selected_tickers = selected_tickers + row
+except:
+  sys.exit("Please run python portfolio_diviersifier_ui.py and monte carlo simulations using forecast option")
 
 # Use tickers to read appropriate montecarlo files and set up the right tables
 i = 0
 for ticker in selected_tickers:
-  globals()[f'mc_{ticker}_table'] = pd.read_csv(create_full_path(f"monte_carlo_simulation_table_{ticker}.csv"))
+  try:
+    globals()[f'mc_{ticker}_table'] = pd.read_csv(create_full_path(f"monte_carlo_simulation_table_{ticker}.csv"))
+  except:
+    sys.exit("Please run python portfolio_diviersifier_ui.py and monte carlo simulations using forecase option")
   globals()[f'mc_{ticker}_table'].columns= ['type', 'value']
   globals()[f'mc_{ticker}'] = pd.read_csv(create_full_path(f'monte_carlo_simulative_returns_{ticker}.csv'))
   globals()[f'mc_{ticker}'].columns= ['Trading Days','mean','median','min','max']
