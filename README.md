@@ -12,9 +12,9 @@ Portfolio Diversifier helps retail customers easily analyze the diversification 
 
 #### WARP > 0 
 ##### ASSET IS IMPROVING YOUR PORTFOLIO BY INCREASING: 
-######            1. Return to Downside Volatility; 
-######            2. Return to MAX Drawdown; 
-######            3. Or BOTH. 
+######            * 1. Return to Downside Volatility; 
+######            * 2. Return to MAX Drawdown; 
+######            * 3. Or BOTH. 
 #### WARP < 0 
 ##### ASSET HURTS YOUR PORTFOLIO BY REPLICATING EXISTING EXPOSURES AND/OR INCREASING DRAWDOWNS AND VOLATILITY.
 
@@ -24,9 +24,9 @@ Portfolio Diversifier helps retail customers easily analyze the diversification 
 
 #### WARP > 0 
 ##### ASSET IS IMPROVING YOUR PORTFOLIO BY INCREASING: 
-######            1. Return to Downside Volatility; 
-######            2. Return to MAX Drawdown; 
-######            3. Or BOTH. 
+######            * 1. Return to Downside Volatility; 
+######            * 2. Return to MAX Drawdown; 
+######            * 3. Or BOTH. 
 #### WARP < 0 
 ##### ASSET HURTS YOUR PORTFOLIO BY REPLICATING EXISTING EXPOSURES AND/OR INCREASING DRAWDOWNS AND VOLATILITY.
 
@@ -76,8 +76,8 @@ There is a 95% chance that an initial investment of $10,000 in the portfolio Ret
 
 ## Planned Additions
 
-Portfolio rebalancing on a daily/monthly basis
-Portfolio optimization based on tickers selected.
+* Portfolio rebalancing on a daily/monthly basis
+* Portfolio optimization based on tickers selected.
 
 ---
 
