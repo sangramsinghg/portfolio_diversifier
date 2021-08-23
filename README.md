@@ -204,8 +204,8 @@ python portfolio_diversifier_ui.py
 Command Line Usage:
 ![Command Line Usage](Images/command_line_usage.png)
 
-NOTE: the user needs to run the portfolio_diversifier_ui.py before running the dash below
-NOTE: The dash needs to be run after forecasting function has been run in the portfolio_diversifier_ui.py
+* NOTE: the user needs to run the portfolio_diversifier_ui.py before running the dash below
+* NOTE: The dash needs to be run after forecasting function has been run in the portfolio_diversifier_ui.py
 
 To launch web output using Dash:
 ```python
