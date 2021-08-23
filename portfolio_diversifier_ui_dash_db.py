@@ -1,3 +1,11 @@
+"""
+portfolio_diversifier_ui_dash_db.py
+
+Author: Dylan Bowsky
+
+"""
+
+# import appropriate modules
 import csv
 import dash
 import dash_core_components as dcc
@@ -21,6 +29,7 @@ import os
 #print(data_tickers)
 cur_dir = os.getcwd()
 
+# create the full path - if the cur dir does not included portfolio diversifier then add it
 def create_full_path(file_name):
   if os.path.basename(cur_dir) != 'portfolio_diversifier':
     cur_full_path = os.path.join(cur_dir, "portfolio_diversifier", file_name)
@@ -56,19 +65,23 @@ fig_bar_sortino = px.bar(risk_return,
   hover_data=["Tickers"],
    title="Risk and return looking at Sortino Ratio", template='plotly_dark')
 
-#Cumulative Returns
+# Cumulative Returns
+# Read Cumulative returns of selected tickers and plot
 cumulative_total= pd.read_csv(create_full_path('cumulative_returns_selected.csv'),index_col='Date')
 fig_cumulative_total = px.line(cumulative_total,
  title='Cumulative Returns since 2008 to 2020', template='plotly_dark')
 
+# Read cumulative returns from 2010 to 2019 and plot  
 cumulative_bull= pd.read_csv(create_full_path('cumulative_returns_selected_2010_2019.csv'),index_col='Date')
 fig_cumulative_bull = px.line(cumulative_bull,
                             title='Cumulative returns would be in a bull market 10-19')
 
+# Read cumulative returns from 2008 to 2009 and plot
 cumulative_bear= pd.read_csv(create_full_path('cumulative_returns_selected_2008_2009.csv'), index_col='Date')
 fig_cumulative_bear= px.line(cumulative_bear,
  title='Cumulative Returns during a bear market 08-09', template='plotly_dark')
 
+# Read tickers to be used for displaying
 selected_tickers = []
 file = open(create_full_path('selected_tickers.csv'), 'r', newline = '')
 with file:
@@ -76,7 +89,7 @@ with file:
   for row in reader:
     selected_tickers = selected_tickers + row
 
-#MonteCarlo Forcasting
+# MonteCarlo Forcasting
 i = 0
 for ticker in selected_tickers:
   globals()[f'mc_{ticker}_table'] = pd.read_csv(create_full_path(f"monte_carlo_simulation_table_{ticker}.csv"))
@@ -88,8 +101,6 @@ for ticker in selected_tickers:
     globals()[f'fig_mc_{ticker}'] = px.line(globals()[f'mc_{ticker}'], y=['max','min','mean','median'], template='plotly_dark')
   else:
     globals()[f'fig_mc_{ticker}'] = px.line(globals()[f'mc_{ticker}'], y=['max','min','mean','median'])
-
-
 
 
 #Creating the style of the Dashboard currently using a simple tab measure

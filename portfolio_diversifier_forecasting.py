@@ -1,4 +1,6 @@
 """
+portfolio_diversifier_forecasting.py
+
 Author: George Kraft
 """
 import pandas as pd
@@ -62,6 +64,3 @@ def execute_monte_carlo_simulation(ticker,
     # Print results
     print(f"There is a 95% chance that an initial investment of $10,000 in the portfolio will result in "
          f" ${diversified_portfolio_ci_lower} to ${diversified_portfolio_ci_upper} in returns\n")
-
-
-

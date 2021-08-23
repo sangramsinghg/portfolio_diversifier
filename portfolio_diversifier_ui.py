@@ -1,6 +1,10 @@
 """
+portfolio_diversifier_ui.py
+
 Author: Rodrigo Monge
 """
+
+# import appropriate modules
 import csv
 import sys
 import fire
@@ -11,6 +15,7 @@ from portfolio_diversifier_ratios_and_calculations import diversify_stocks_with_
 from portfolio_diversifier_ratios_and_calculations import retrieve_yahoo_data_close
 from portfolio_diversifier_forecasting import execute_monte_carlo_simulation
 
+# Set the globals including tickers, ticker list, rates, portfolio weights and dates 
 ticker_list = ["qqq", "lqd", "hyg", "tlt", "ief", "shy", "gld", "slv", "efa", "eem", "iyr", "xle", "xlk", "xlf"]
 #selected_ticker_list = ['shy', 'gld', 'tlt']
 selected_ticker_list = ['shy', 'gld', 'tlt']
@@ -84,7 +89,6 @@ def ratios_menu():
     ).ask()
     return ratios_action
 
-
 """The function for running the ratios selected."""
 def run_ratios():
 
@@ -127,7 +131,6 @@ def run_ratios_function():
     question = questionary.confirm("Would you like to perform another action").ask()
 
     """Conditional to determine if the clients wants to do any additional actions"""
-# For now this will loop to a level lower than required, it is a placeholder to check that the code works as intended
     if question == True:
         run_final_function()
     else:
@@ -166,6 +169,7 @@ def add_ticker():
     Add tickers {add_ticker_action}\n""")
     return add_ticker_action
 
+# UI to add tickers and recalculate ratios and returns
 def run_add_tickers():
 
     global tickers
@@ -179,6 +183,7 @@ def run_add_tickers():
     calculate_ratios_and_returns_for_diversified_portfolio()
     return(tickers)
 
+# UI to remove tickers
 def remove_ticker():
     
     global tickers
@@ -192,6 +197,7 @@ def remove_ticker():
     Removed ticker {remove_ticker_action}\n""")
     return remove_ticker_action
 
+# UI to remove tickers and re-calculate the ratios and returns
 def run_remove_tickers():
 
     global tickers
@@ -205,6 +211,7 @@ def run_remove_tickers():
     calculate_ratios_and_returns_for_diversified_portfolio()
     return(tickers)
 
+# Function to Allow add or remove of tickers 
 def run_add_and_remove_function():
 
     add_or_remove_action = ticker_action()
@@ -262,6 +269,7 @@ def run_final_function():
     elif first_action == "Exit":
         sys.exit("Thank you for using our service")
 
+# Display the age menu and pre-select portfolio weights based on age
 def age_menu():
     "Dialog to select age"
     global weight_base_portfolio_stock
@@ -293,6 +301,7 @@ def age_menu():
 
     return age_action
 
+# Function that invokes main function to calculate ratios and returns 
 def calculate_ratios_and_returns_for_diversified_portfolio():
     global base_portfolio_df
     global new_portfolios_df
@@ -304,6 +313,7 @@ def calculate_ratios_and_returns_for_diversified_portfolio():
                                         ticker_base_portfolio_stock, ticker_base_portfolio_bond,
                                         start_date, end_date, save_plots = False)
 
+# Function to display the allocation menu that allows you to change the portfolio weights
 def allocation_menu():
     "Dialog to select allocation"
     global weight_base_portfolio_stock
@@ -320,6 +330,7 @@ def allocation_menu():
                     "Enter Manually"]
     ).ask()
 
+    # change portfolio weights based on the allocation
     if allocation_action == "100% stocks":
         weight_base_portfolio_stock = 1.00
         weight_base_portfolio_bond  = 0.00
@@ -339,6 +350,8 @@ def allocation_menu():
         weight_base_portfolio_stock = 0.00
         weight_base_portfolio_bond  = 1.00
     elif allocation_action == "Enter Manually":
+        # if manual entry was selected - allow the user to enter the stock percentage and calculate bond
+        # percentage based on it.
         try:
             stock_percentage = questionary.text("Please enter the stock percentage (0 to 100: default 60) ").ask()
             stock_percentage = float(stock_percentage)
@@ -355,6 +368,7 @@ def allocation_menu():
             weight_base_portfolio_stock = 0.60
             weight_base_portfolio_bond  = 0.40
     
+    # re-calculate the ratios and returns for diversified portfolios
     calculate_ratios_and_returns_for_diversified_portfolio()
     run_final_function()
     return allocation_action

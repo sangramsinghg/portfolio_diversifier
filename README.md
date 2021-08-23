@@ -167,7 +167,7 @@ Command Line Usage
 
 To launch web output using Dash:
 ```python
-python portfolio_diversifier_ui_dash_db.py
+python <full path of the portfolio diversifier folder>/portfolio_diversifier_ui_dash_db.py
 ```
 
 ---
